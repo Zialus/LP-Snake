@@ -8,12 +8,18 @@ import com.googlecode.lanterna.terminal.TerminalSize;
 
 public class StartGame {
 	private Terminal term;
-	private ArrayList snakeCompleta = new ArrayList<Cell>();
+	private ArrayList<Cell> snakeCompleta = new ArrayList<Cell>();
 	private int cursor_x=10, cursor_y=10;
 	
+	
+	public enum Directions{UP,DOWN,LEFT,RIGHT}
+	
+	
+		
 	public StartGame(){
 		term = TerminalFacade.createTerminal();
 		term.enterPrivateMode();
+		Directions direction = StartGame.Directions.RIGHT;
 		
 		Cordenadas cor1 = new Cordenadas(cursor_x,cursor_y);
 		Cordenadas cor2 = new Cordenadas(cursor_x -1,cursor_y);
@@ -39,6 +45,7 @@ public class StartGame {
 				   term.exitPrivateMode();
 				   return;
 			       case ArrowLeft: 
+			    	   
 			    	   cursor_x -= 1;
 					   break;
 				   case ArrowRight:
@@ -79,6 +86,9 @@ public class StartGame {
 		
 		int len = snakeCompleta.size();
 		
+		
+		
+		//actualizaSnake(cursor_x,cursor_y);
 		Cell cel = (Cell) snakeCompleta.get(0);
 		
 		
@@ -93,5 +103,35 @@ public class StartGame {
 			term.putCharacter(((Cell) snakeCompleta.get(i)).getCorpo());
 			
 		}
+		actualizaSnake(cursor_x,cursor_y);
+	}
+	
+	
+	private void actualizaSnake(int newX,int newY){
+		int len = snakeCompleta.size();
+		int x,y;
+		
+		for(int i=len-1;i>0; i--){
+			x= snakeCompleta.get(i-1).getCord().getX();
+			System.out.println("-----x="+x);
+			y= snakeCompleta.get(i-1).getCord().getY();
+			System.out.println("-----y"+y);
+			snakeCompleta.get(i).getCord().setX(x);
+			snakeCompleta.get(i).getCord().setY(y);
+		}
+		
+		snakeCompleta.get(0).getCord().setX(newX);
+		snakeCompleta.get(0).getCord().setY(newY);
+		
+		
+		
+		
+		
+		
+		
 	}
 }
+
+
+
+//caso em que o k = null e sabemos a direction atual..
