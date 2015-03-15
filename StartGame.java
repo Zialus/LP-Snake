@@ -120,6 +120,30 @@ public class StartGame {
 		term.putCharacter(cel.getCorpo());
 		TerminalSize terminalSize = term.getTerminalSize();
 		
+		
+		int colunas = terminalSize.getColumns();
+		int linhas = terminalSize.getRows();
+
+		for(int i = 0; i<terminalSize.getRows();i++){
+			
+			term.moveCursor(0,i);
+			term.putCharacter('#');
+			//bug a ser corrigido
+			term.moveCursor(linhas+60,i);
+			term.putCharacter('#');
+
+		}
+		
+		for(int i = 0; i<terminalSize.getColumns();i++){
+		
+			term.moveCursor(i,0);
+			term.putCharacter('#');
+			term.moveCursor(i,colunas);
+			term.putCharacter('#');
+
+		}
+		
+		
 		for(int i =1; i<len;i++){
 			corX =((Cell) snakeCompleta.get(i)).getCord().getX();
 			corY =((Cell) snakeCompleta.get(i)).getCord().getY();
