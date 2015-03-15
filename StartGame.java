@@ -129,7 +129,7 @@ public class StartGame {
 			term.moveCursor(0,i);
 			term.putCharacter('#');
 			//bug a ser corrigido
-			term.moveCursor(linhas+60,i);
+			term.moveCursor(colunas,i);
 			term.putCharacter('#');
 
 		}
@@ -138,7 +138,7 @@ public class StartGame {
 		
 			term.moveCursor(i,0);
 			term.putCharacter('#');
-			term.moveCursor(i,colunas);
+			term.moveCursor(i,linhas);
 			term.putCharacter('#');
 
 		}
