@@ -11,10 +11,7 @@ public class StartGame {
 	private ArrayList<Cell> snakeCompleta = new ArrayList<Cell>();
 	private int cursor_x=10, cursor_y=10;
 	
-	
 	public enum Directions{UP,DOWN,LEFT,RIGHT}
-	
-	
 		
 	public StartGame(){
 		term = TerminalFacade.createTerminal();
@@ -39,25 +36,53 @@ public class StartGame {
 		while(true){
 			Key k = term.readInput();
 			if (k != null) {
-				
+
 				switch (k.getKind()) {
 			       case Escape:
 				   term.exitPrivateMode();
 				   return;
-			       case ArrowLeft: 
-			    	   
-			    	   cursor_x -= 1;
+			       case ArrowLeft:
+			    	   if (direction != Directions.RIGHT) {
+						   cursor_x -= 1;
+						   direction = Directions.LEFT;
+					   }
 					   break;
 				   case ArrowRight:
-					   cursor_x += 1;
+					   if (direction != Directions.LEFT) {
+						   cursor_x += 1;
+						   direction = Directions.RIGHT;
+					   }
 					   break;
-				   case ArrowDown: 
-					   cursor_y += 1;
+				   case ArrowDown:
+					   if (direction != Directions.UP) {
+						   cursor_y += 1;
+						   direction = Directions.DOWN;
+					   }
 					   break;
 				   case ArrowUp:
-					   cursor_y -= 1;
+					   if (direction != Directions.DOWN) {
+						   cursor_y -= 1;
+						   direction = Directions.UP;
+					   }
 					   break;
-				}	
+				}
+			}
+			if (k == null) {
+
+				switch (direction) {
+					case LEFT:
+						cursor_x -= 1;
+						break;
+					case RIGHT:
+						cursor_x += 1;
+						break;
+					case DOWN:
+						cursor_y += 1;
+						break;
+					case UP:
+						cursor_y -= 1;
+						break;
+				}
 			}
 			term.clearScreen();
 			
@@ -69,7 +94,7 @@ public class StartGame {
 
 	           try
 	           {
-	               Thread.sleep(10);
+	               Thread.sleep(300);
 	           }
 	           catch (InterruptedException ie)
 	           {
@@ -123,15 +148,8 @@ public class StartGame {
 		snakeCompleta.get(0).getCord().setX(newX);
 		snakeCompleta.get(0).getCord().setY(newY);
 		
-		
-		
-		
-		
-		
-		
 	}
 }
 
 
 
-//caso em que o k = null e sabemos a direction atual..
