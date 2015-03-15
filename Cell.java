@@ -1,4 +1,5 @@
 public class Cell {
+	
 	private char corpo;
 	private Cordenadas cord;
 	
