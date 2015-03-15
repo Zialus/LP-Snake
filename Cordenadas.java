@@ -1,5 +1,3 @@
-
-
 public class Cordenadas {
 	
 	private int x;

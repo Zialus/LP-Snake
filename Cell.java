@@ -1,6 +1,3 @@
-
-
-
 public class Cell {
 	private char corpo;
 	private Cordenadas cord;
@@ -27,6 +24,5 @@ public class Cell {
 	public void setCord(Cordenadas cord) {
 		this.cord = cord;
 	}
-	
 	
 }
