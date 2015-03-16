@@ -22,16 +22,19 @@ public class StartGame {
 		Cordenadas cor2 = new Cordenadas(cursor_x -1,cursor_y);
 		Cordenadas cor3 = new Cordenadas(cursor_x -2,cursor_y);
 		Cordenadas cor4 = new Cordenadas(cursor_x -3,cursor_y);
+		Cordenadas cor5 = new Cordenadas(cursor_x -4,cursor_y);
 
 		Cell cel1 = new Cell('@', cor1);
 		Cell cel2 = new Cell('0', cor2);
 		Cell cel3 = new Cell('0', cor3);
-		Cell cel4 = new Cell('Q', cor4);
+		Cell cel4 = new Cell('0', cor4);
+		Cell cel5 = new Cell('Q', cor5);
 
 		snakeCompleta.add(cel1);
 		snakeCompleta.add(cel2);
 		snakeCompleta.add(cel3);
 		snakeCompleta.add(cel4);
+		snakeCompleta.add(cel5);
 
 		while(true){
 			Key k = term.readInput();
@@ -92,6 +95,7 @@ public class StartGame {
 			term.applyForegroundColor(Terminal.Color.BLUE);
 
 			showSnake();
+			showBorders();
 			term.flush();
 
 			try
@@ -107,21 +111,10 @@ public class StartGame {
 
 	}
 
-	private void showSnake(){
-		term.moveCursor(cursor_x, cursor_y);
-		int corX, corY;
-
-		int len = snakeCompleta.size();
-
-
-
-		//actualizaSnake(cursor_x,cursor_y);
-		Cell cel = (Cell) snakeCompleta.get(0);
-
-
-		term.putCharacter(cel.getCorpo());
+	
+	private void showBorders(){
+		
 		TerminalSize terminalSize = term.getTerminalSize();
-
 
 		int colunas = terminalSize.getColumns();
 		int linhas = terminalSize.getRows();
@@ -144,16 +137,29 @@ public class StartGame {
 			term.putCharacter('#');
 
 		}
+		
+	}
+	
+	private void showSnake(){
+		term.moveCursor(cursor_x, cursor_y);
+		int corX, corY;
+
+		int len = snakeCompleta.size();
+
+		actualizaSnake(cursor_x,cursor_y);
+		Cell cel = snakeCompleta.get(0);
+
+		term.putCharacter(cel.getCorpo());
 
 
 		for(int i =1; i<len;i++){
-			corX =((Cell) snakeCompleta.get(i)).getCord().getX();
-			corY =((Cell) snakeCompleta.get(i)).getCord().getY();
+			corX =( snakeCompleta.get(i)).getCord().getX();
+			corY =( snakeCompleta.get(i)).getCord().getY();
 
 			term.applyForegroundColor(Terminal.Color.GREEN);
 
 			term.moveCursor(corX,corY);
-			term.putCharacter(((Cell) snakeCompleta.get(i)).getCorpo());
+			term.putCharacter(( snakeCompleta.get(i)).getCorpo());
 
 		}
 		actualizaSnake(cursor_x,cursor_y);
