@@ -14,14 +14,16 @@ public class StartGame {
 	public enum Directions{UP,DOWN,LEFT,RIGHT}
 
 	public StartGame(){
+		
+		//Inicializar o terminal
 		term = TerminalFacade.createTerminal();
 		term.enterPrivateMode();
 		Directions direction = StartGame.Directions.RIGHT;
 
+		//Criar a Snake
 		createSnake();
-		
-		
 
+		//Dealing with input
 		while(true){
 			Key k = term.readInput();
 			if (k != null) {
@@ -75,13 +77,15 @@ public class StartGame {
 					break;
 				}
 			}
+			
 			term.clearScreen();
-
 			term.applySGR(Terminal.SGR.ENTER_BOLD);
 			term.applyForegroundColor(Terminal.Color.BLUE);
 
+			actualizaSnake(cursor_x,cursor_y);
 			showSnake();
 			showBorders();
+			
 			term.flush();
 
 			try
@@ -106,22 +110,18 @@ public class StartGame {
 		int linhas = terminalSize.getRows();
 
 		for(int i = 0; i<terminalSize.getRows();i++){
-
 			term.moveCursor(0,i);
 			term.applyForegroundColor(Terminal.Color.RED);
 			term.putCharacter('#');
 			term.moveCursor(colunas,i);
 			term.putCharacter('#');
-
 		}
 
 		for(int i = 0; i<terminalSize.getColumns();i++){
-
 			term.moveCursor(i,0);
 			term.putCharacter('#');
 			term.moveCursor(i,linhas);
 			term.putCharacter('#');
-
 		}
 		
 	}
@@ -132,11 +132,8 @@ public class StartGame {
 
 		int len = snakeCompleta.size();
 
-		actualizaSnake(cursor_x,cursor_y);
 		Cell cel = snakeCompleta.get(0);
-
 		term.putCharacter(cel.getCorpo());
-
 
 		for(int i =1; i<len;i++){
 			corX =( snakeCompleta.get(i)).getCord().getX();
@@ -148,7 +145,6 @@ public class StartGame {
 			term.putCharacter(( snakeCompleta.get(i)).getCorpo());
 
 		}
-		actualizaSnake(cursor_x,cursor_y);
 	}
 
 	private void createSnake(){
