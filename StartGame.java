@@ -18,23 +18,9 @@ public class StartGame {
 		term.enterPrivateMode();
 		Directions direction = StartGame.Directions.RIGHT;
 
-		Cordenadas cor1 = new Cordenadas(cursor_x,cursor_y);
-		Cordenadas cor2 = new Cordenadas(cursor_x -1,cursor_y);
-		Cordenadas cor3 = new Cordenadas(cursor_x -2,cursor_y);
-		Cordenadas cor4 = new Cordenadas(cursor_x -3,cursor_y);
-		Cordenadas cor5 = new Cordenadas(cursor_x -4,cursor_y);
-
-		Cell cel1 = new Cell('@', cor1);
-		Cell cel2 = new Cell('0', cor2);
-		Cell cel3 = new Cell('0', cor3);
-		Cell cel4 = new Cell('0', cor4);
-		Cell cel5 = new Cell('Q', cor5);
-
-		snakeCompleta.add(cel1);
-		snakeCompleta.add(cel2);
-		snakeCompleta.add(cel3);
-		snakeCompleta.add(cel4);
-		snakeCompleta.add(cel5);
+		createSnake();
+		
+		
 
 		while(true){
 			Key k = term.readInput();
@@ -100,7 +86,7 @@ public class StartGame {
 
 			try
 			{
-				Thread.sleep(300);
+				Thread.sleep(200);
 			}
 			catch (InterruptedException ie)
 			{
@@ -165,10 +151,29 @@ public class StartGame {
 		actualizaSnake(cursor_x,cursor_y);
 	}
 
+	private void createSnake(){
+		Cordenadas cor1 = new Cordenadas(cursor_x,cursor_y);
+		Cordenadas cor2 = new Cordenadas(cursor_x -1,cursor_y);
+		Cordenadas cor3 = new Cordenadas(cursor_x -2,cursor_y);
+		Cordenadas cor4 = new Cordenadas(cursor_x -3,cursor_y);
+		Cordenadas cor5 = new Cordenadas(cursor_x -4,cursor_y);
+
+		Cell cel1 = new Cell('@', cor1);
+		Cell cel2 = new Cell('0', cor2);
+		Cell cel3 = new Cell('0', cor3);
+		Cell cel4 = new Cell('0', cor4);
+		Cell cel5 = new Cell('Q', cor5);
+
+		snakeCompleta.add(cel1);
+		snakeCompleta.add(cel2);
+		snakeCompleta.add(cel3);
+		snakeCompleta.add(cel4);
+		snakeCompleta.add(cel5);
+	}
 
 	private void actualizaSnake(int newX,int newY){
-		int len = snakeCompleta.size();
 		int x,y;
+		int len = snakeCompleta.size();
 
 		for(int i=len-1;i>0; i--){
 			x= snakeCompleta.get(i-1).getCord().getX();
