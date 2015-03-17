@@ -19,7 +19,7 @@ public class StartGame {
 		term.enterPrivateMode();
 		Directions direction = StartGame.Directions.RIGHT;
 		
-		
+
 		//Criar a Snake
 		createSnake();
 
@@ -79,13 +79,15 @@ public class StartGame {
 				}
 			}
 
+			TerminalSize terminalSize = term.getTerminalSize();
+
 			term.clearScreen();
 			term.applySGR(Terminal.SGR.ENTER_BOLD);
 
 			actualizaSnake();
 			showSnake();
 			showBorders();
-			showFood();
+			showFood(terminalSize);
 
 			term.flush();
 
@@ -103,8 +105,23 @@ public class StartGame {
 	}
 
 
-	private void showFood() {
-
+	private void showFood(TerminalSize terminalSize) {
+		int colunas = terminalSize.getColumns();
+		int linhas = terminalSize.getRows();
+		
+		int foodColumns = 2 + (int)(Math.random() * ((colunas - 2) ));        	   	    	
+		int foodRows = 2 + (int)(Math.random() * ((linhas - 2) ));       	    	   
+		Cordenadas foodCord = new Cordenadas(foodColumns,foodRows);
+		
+		Cell food = new Cell('', foodCord);
+		int food_X = food.getCord().getX();
+		int food_Y = food.getCord().getY();
+		
+		term.applyForegroundColor(Terminal.Color.YELLOW);
+		
+		term.moveCursor(food_X, food_Y);
+		term.putCharacter(food.getCorpo());
+		
 	}
 
 
