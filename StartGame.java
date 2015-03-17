@@ -18,15 +18,17 @@ public class StartGame {
 		term = TerminalFacade.createTerminal();
 		term.enterPrivateMode();
 		Directions direction = StartGame.Directions.RIGHT;
-
+		
+		
 		//Criar a Snake
 		createSnake();
 
 		//Dealing with input
 		while(true){
 			Key k = term.readInput();
-			
+
 			if (k != null) {
+				System.out.println(k);
 				switch (k.getKind()) {
 				case Escape:
 					term.exitPrivateMode();
@@ -58,7 +60,7 @@ public class StartGame {
 				default:
 					break;
 				}
-				
+
 			}
 			if (k == null) {
 				switch (direction) {
@@ -76,14 +78,15 @@ public class StartGame {
 					break;
 				}
 			}
-			
+
 			term.clearScreen();
 			term.applySGR(Terminal.SGR.ENTER_BOLD);
 
-			actualizaSnake(cursor_x,cursor_y);
+			actualizaSnake();
 			showSnake();
 			showBorders();
-			
+			showFood();
+
 			term.flush();
 
 			try
@@ -99,17 +102,22 @@ public class StartGame {
 
 	}
 
-	
+
+	private void showFood() {
+
+	}
+
+
 	private void showBorders(){
-		
+
 		TerminalSize terminalSize = term.getTerminalSize();
+		term.applyForegroundColor(Terminal.Color.RED);
 
 		int colunas = terminalSize.getColumns();
 		int linhas = terminalSize.getRows();
 
 		for(int i = 0; i<linhas;i++){
 			term.moveCursor(0,i);
-			term.applyForegroundColor(Terminal.Color.RED);
 			term.putCharacter('#');
 			term.moveCursor(colunas,i);
 			term.putCharacter('#');
@@ -121,31 +129,30 @@ public class StartGame {
 			term.moveCursor(i,linhas);
 			term.putCharacter('#');
 		}
-		
+
 	}
-	
+
 	private void showSnake(){
 
 		//Cabeça
 		Cell head = snakeCompleta.get(0);
-		term.moveCursor(cursor_x, cursor_y);
 		term.applyForegroundColor(Terminal.Color.BLUE);
+		term.moveCursor(cursor_x, cursor_y);
 		term.putCharacter(head.getCorpo());
 
 		//Resto do corpo
-		
+		term.applyForegroundColor(Terminal.Color.GREEN);
 		int corX, corY;
 		int len = snakeCompleta.size();
-		
+
 		for(int i =1; i<len;i++){
 			corX = ( snakeCompleta.get(i)).getCord().getX();
 			corY = ( snakeCompleta.get(i)).getCord().getY();
 			Cell tail = snakeCompleta.get(i);
 			term.moveCursor(corX,corY);
-			term.applyForegroundColor(Terminal.Color.GREEN);
 			term.putCharacter( tail.getCorpo() );
 		}
-		
+
 	}
 
 	private void createSnake(){
@@ -168,53 +175,108 @@ public class StartGame {
 		snakeCompleta.add(cel5);
 	}
 
-	private void actualizaSnake(int newX,int newY){
+	private void actualizaSnake(){
 		int x,y;
 		int len = snakeCompleta.size();
 
+		int newX = cursor_x;
+		int	newY = cursor_y;
+		
 		for(int i=len-1;i>0; i--){
-			x= snakeCompleta.get(i-1).getCord().getX();
-			System.out.println("-----x="+x);
-			y= snakeCompleta.get(i-1).getCord().getY();
-			System.out.println("-----y"+y);
+			
+			x = snakeCompleta.get(i-1).getCord().getX();
+			y = snakeCompleta.get(i-1).getCord().getY();
 			snakeCompleta.get(i).getCord().setX(x);
 			snakeCompleta.get(i).getCord().setY(y);
+			
 		}
 
 		snakeCompleta.get(0).getCord().setX(newX);
 		snakeCompleta.get(0).getCord().setY(newY);
-		
+
 		collisons();
-		
-		if(hitborder == true || hitself == true){
-			term.moveCursor(6,6);
-			System.out.println("GAME OVER");
-		}
-		hitborder = false;
-		
+
+		dealwithcollisions();
+
 	}
 	
 	private void collisons() {
 		TerminalSize terminalSize = term.getTerminalSize();
 		int colunas = terminalSize.getColumns();
 		int linhas = terminalSize.getRows();
-		
+	
 		Cell head = snakeCompleta.get(0);
 		int head_X = ( head.getCord().getX());
 		int head_Y = ( head.getCord().getY());
-		
+	
+		//Collisions with borders
 		for(int i = 0; i<linhas;i++){
 			if ( (head_X==0 || head_X == colunas) && head_Y == i){
 				hitborder = true;
 			}
 		}
-		
+	
 		for(int i = 0; i<colunas;i++){
 			if ( (head_Y==0 || head_Y == linhas) && head_X == i){
 				hitborder = true;
 			}
 		}
+	
+		//Collisions with body
+		int len = snakeCompleta.size();
+	
+		for(int i=len-1;i>0; i--){
+			int Corpo_X = snakeCompleta.get(i-1).getCord().getX();
+			int Corpo_Y = snakeCompleta.get(i-1).getCord().getY();
+	
+			if ( (head_X==Corpo_X && head_X == Corpo_Y) )
+			{
+				hitself = true;
+			}
+		}
+	}
+
+
+	private void dealwithcollisions(){
+		if(hitborder == true || hitself == true){
+
+			System.out.println("GAME OVER");
+			System.out.println("-----x="+cursor_x+"-----");
+			System.out.println("-----y="+cursor_y+"-----");
+
+
+			show("GAME OVER",45,15);
+
+
+			//Deal with Game Over and Start the Game again
+			while(true) 
+			{
+				Key exit = term.readInput();
+				if (exit != null)
+				{
+					if (exit.getKind() == Key.Kind.Escape) 
+					{
+						System.exit(0); 
+					}	
+					if (exit.getKind() == Key.Kind.Enter) {
+						hitborder = false;
+						new StartGame();
+					}
+				}
+
+			}
+
+		}
 		
-		
+	}
+
+	private void show(String str, int x, int y){
+		term.moveCursor(x, y);
+
+		int len = str.length();
+
+		for (int i = 0; i < len; i++){
+			term.putCharacter(str.charAt(i));
+		}
 	}
 }
