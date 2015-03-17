@@ -8,10 +8,15 @@ import com.googlecode.lanterna.terminal.TerminalSize;
 public class StartGame {
 	private Terminal term;
 	private ArrayList<Cell> snakeCompleta = new ArrayList<Cell>();
+	private ArrayList<Cell> Comida = new ArrayList<Cell>();
+
+	
 	private int cursor_x=10, cursor_y=10;
 	private boolean hitborder = false;
 	private boolean hitself = false;
+	private boolean hitfood = false;
 	public enum Directions{UP,DOWN,LEFT,RIGHT}
+	public Cell food;
 
 	public StartGame(){	
 		//Inicializar o terminal
@@ -20,8 +25,11 @@ public class StartGame {
 		Directions direction = StartGame.Directions.RIGHT;
 		
 
+		TerminalSize terminalsize = term.getTerminalSize();
+		
 		//Criar a Snake
 		createSnake();
+		createFood(terminalsize);
 
 		//Dealing with input
 		while(true){
@@ -87,7 +95,8 @@ public class StartGame {
 			actualizaSnake();
 			showSnake();
 			showBorders();
-			showFood(terminalSize);
+			createFood(terminalSize);
+			showFood();
 
 			term.flush();
 
@@ -104,8 +113,7 @@ public class StartGame {
 
 	}
 
-
-	private void showFood(TerminalSize terminalSize) {
+	private void createFood(TerminalSize terminalSize){
 		int colunas = terminalSize.getColumns();
 		int linhas = terminalSize.getRows();
 		
@@ -114,6 +122,14 @@ public class StartGame {
 		Cordenadas foodCord = new Cordenadas(foodColumns,foodRows);
 		
 		Cell food = new Cell('', foodCord);
+		Comida.add(food);
+		
+	}
+
+	private void showFood() {
+		
+		Cell food = Comida.get(0);
+		
 		int food_X = food.getCord().getX();
 		int food_Y = food.getCord().getY();
 		
@@ -251,6 +267,23 @@ public class StartGame {
 				hitself = true;
 			}
 		}
+		
+		//Collisions with food
+		
+		Cell food = Comida.get(0);
+		
+		int food_X = food.getCord().getX();
+		int food_Y = food.getCord().getY();
+		
+		if ( (head_X == food_X) && (head_Y == food_Y)) {
+			hitfood = true;
+			System.out.println("Bateu");
+			createFood(terminalSize);
+
+		}
+		
+		
+		
 	}
 
 
