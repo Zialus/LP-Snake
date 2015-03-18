@@ -95,14 +95,19 @@ public class StartGame {
 			actualizaSnake();
 			showSnake();
 			showBorders();
-			createFood(terminalSize);
+			
+			if(hitfood == true){
+				hitfood = false;
+				Comida.remove(0);
+				createFood(terminalSize);
+			}
 			showFood();
 
 			term.flush();
 
 			try
 			{
-				Thread.sleep(200);
+				Thread.sleep(80);
 			}
 			catch (InterruptedException ie)
 			{
@@ -258,9 +263,9 @@ public class StartGame {
 		//Collisions with body
 		int len = snakeCompleta.size();
 	
-		for(int i=len-1;i>0; i--){
-			int Corpo_X = snakeCompleta.get(i-1).getCord().getX();
-			int Corpo_Y = snakeCompleta.get(i-1).getCord().getY();
+		for(int i=1;i<len-1; i++){
+			int Corpo_X = snakeCompleta.get(i).getCord().getX();
+			int Corpo_Y = snakeCompleta.get(i).getCord().getY();
 	
 			if ( (head_X==Corpo_X && head_X == Corpo_Y) )
 			{
@@ -288,6 +293,8 @@ public class StartGame {
 
 
 	private void dealwithcollisions(){
+		
+		
 		if(hitborder == true || hitself == true){
 
 			System.out.println("GAME OVER");
@@ -309,7 +316,6 @@ public class StartGame {
 						System.exit(0); 
 					}	
 					if (exit.getKind() == Key.Kind.Enter) {
-						hitborder = false;
 						new StartGame();
 					}
 				}
