@@ -9,9 +9,8 @@ public class StartGame {
 	private Terminal term;
 	private ArrayList<Cell> snakeCompleta = new ArrayList<Cell>();
 	private ArrayList<Cell> Comida = new ArrayList<Cell>();
-
-
-	private int cursor_x=10, cursor_y=10;
+	private int score = 0; // Pontuação
+	private int cursor_x=10, cursor_y=10; // Posição inicial da Snake
 	private boolean hitborder = false;
 	private boolean hitself = false;
 	private boolean hitfood = false;
@@ -93,12 +92,13 @@ public class StartGame {
 			term.applySGR(Terminal.SGR.ENTER_BOLD);
 
 			showBorders();
+			showFood();
+
 			
 			collisons();
 			dealwithcollisions();
 
 			if(hitfood == true){
-				//hitfood = false;
 				Comida.remove(0);
 				createFood(terminalSize);
 			}
@@ -109,7 +109,6 @@ public class StartGame {
 			hitfood = false;
 
 
-			showFood();
 
 			term.flush();
 
@@ -258,6 +257,7 @@ public class StartGame {
 	}
 
 	private void collisons() {
+		
 		TerminalSize terminalSize = term.getTerminalSize();
 		int colunas = terminalSize.getColumns();
 		int linhas = terminalSize.getRows();
@@ -270,25 +270,28 @@ public class StartGame {
 		for(int i = 0; i<linhas;i++){
 			if ( (head_X==0 || head_X == colunas) && head_Y == i){
 				hitborder = true;
+				System.out.println("Bateu numa coluna");
 			}
 		}
 
 		for(int i = 0; i<colunas;i++){
 			if ( (head_Y==0 || head_Y == linhas) && head_X == i){
 				hitborder = true;
+				System.out.println("Bateu numa linha");
 			}
 		}
 
 		//Collisions with body
 		int len = snakeCompleta.size();
 
-		for(int i=1;i<len-1; i++){
+		for(int i=1;i<len; i++){
 			int Corpo_X = snakeCompleta.get(i).getCord().getX();
 			int Corpo_Y = snakeCompleta.get(i).getCord().getY();
 
-			if ( (head_X==Corpo_X && head_X == Corpo_Y) )
+			if ( (head_X==Corpo_X && head_Y == Corpo_Y) )
 			{
 				hitself = true;
+				System.out.println("Bateu em si propria");
 			}
 		}
 
@@ -301,9 +304,8 @@ public class StartGame {
 
 		if ( (head_X == food_X) && (head_Y == food_Y)) {
 			hitfood = true;
-			System.out.println("Bateu");
-			createFood(terminalSize);
-
+			score += 10;
+			System.out.println("Comeu a food");
 		}
 
 
@@ -320,6 +322,8 @@ public class StartGame {
 			System.out.println("-----y="+cursor_y+"-----");
 
 			show("GAME OVER",45,15);
+			
+			show("Score = " + score,45,20);
 
 			//Deal with Game Over and Start the Game again
 			while(true) 
