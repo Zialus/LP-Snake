@@ -16,6 +16,8 @@ public class StartGame {
 	private boolean hitfood = false;
 	public enum Directions{UP,DOWN,LEFT,RIGHT}
 	public Cell food;
+	
+	TerminalSize terminalsize;
 
 	public StartGame(){	
 		//Inicializar o terminal
@@ -24,9 +26,10 @@ public class StartGame {
 		Directions direction = StartGame.Directions.RIGHT;
 
 
-		TerminalSize terminalsize = term.getTerminalSize();
-//		int colunas = terminalsize.getColumns();
-//		int linhas = terminalsize.getRows();
+		terminalsize = term.getTerminalSize();
+		
+		//		int colunas = terminalsize.getColumns();
+		//		int linhas = terminalsize.getRows();
 
 		//Criar a Snake
 		createSnake();
@@ -34,6 +37,18 @@ public class StartGame {
 
 		//Dealing with input
 		while(true){
+			
+			term.clearScreen();
+			term.applySGR(Terminal.SGR.ENTER_BOLD);
+
+			showBorders();
+			showFood();
+			showSnake();
+			
+			term.flush();
+
+			
+			
 			Key k = term.readInput();
 
 			if (k != null) {
@@ -88,35 +103,21 @@ public class StartGame {
 				}
 			}
 
-			TerminalSize terminalSize = term.getTerminalSize();
-
-			term.clearScreen();
-			term.applySGR(Terminal.SGR.ENTER_BOLD);
-
-			showBorders();
-			showFood();
-
+			//TerminalSize terminalSize = term.getTerminalSize();
 
 			collisons();
-			dealwithcollisions();
-
-			if(hitfood == true){
-				Comida.remove(0);
-				createFood(terminalSize);
-			}
 
 			actualizaSnake();
-			showSnake();
+
 
 			hitfood = false;
 
 
 
-			term.flush();
 
 			try
 			{
-				Thread.sleep(150);
+				Thread.sleep(80);
 			}
 			catch (InterruptedException ie)
 			{
@@ -183,8 +184,11 @@ public class StartGame {
 
 		//Cabeça
 		Cell head = snakeCompleta.get(0);
+		int head_X = ( head.getCord().getX());
+		int head_Y = ( head.getCord().getY());
+
 		term.applyForegroundColor(Terminal.Color.BLUE);
-		term.moveCursor(cursor_x, cursor_y);
+		term.moveCursor(head_X, head_Y);
 		term.putCharacter(head.getCorpo());
 
 		//Resto do corpo
@@ -222,49 +226,16 @@ public class StartGame {
 		snakeCompleta.add(cel5);
 	}
 
-	private void actualizaSnake(){
-		int len = snakeCompleta.size();
-
-		//Aumentar Snake
-		if (hitfood == true){
-
-			int x = snakeCompleta.get(len-1).getCord().getX();
-			int y = snakeCompleta.get(len-1).getCord().getY();
-
-			Cordenadas coord = new Cordenadas(x,y);
-			Cell new_tail = new Cell('0', coord);
-
-			snakeCompleta.add(new_tail);
-
-
-		}
-
-		//remover cauda
-		snakeCompleta.remove(len-1);
-
-		int newX = cursor_x; int newY = cursor_y;
-		Cordenadas coord = new Cordenadas(newX,newY);
-		Cell new_head = new Cell('@', coord);
-
-		//Adicionar cabeça
-		snakeCompleta.add(0,new_head);
-		
-		//Corrigir caracters
-		snakeCompleta.get(1).setCorpo('O');
-		snakeCompleta.get(len-1).setCorpo('Q');
-
-	}
-
 	private void collisons() {
-
+	
 		TerminalSize terminalSize = term.getTerminalSize();
 		int colunas = terminalSize.getColumns();
 		int linhas = terminalSize.getRows();
-
+	
 		Cell head = snakeCompleta.get(0);
 		int head_X = ( head.getCord().getX());
 		int head_Y = ( head.getCord().getY());
-
+	
 		//Collisions with borders
 		for(int i = 0; i<linhas;i++){
 			if ( (head_X==0 || head_X == colunas) && head_Y == i){
@@ -272,58 +243,38 @@ public class StartGame {
 				System.out.println("Bateu numa coluna");
 			}
 		}
-
+	
 		for(int i = 0; i<colunas;i++){
 			if ( (head_Y==0 || head_Y == linhas) && head_X == i){
 				hitborder = true;
 				System.out.println("Bateu numa linha");
 			}
 		}
-
+	
 		//Collisions with body
 		int len = snakeCompleta.size();
-
+	
 		for(int i=1;i<len; i++){
 			int Corpo_X = snakeCompleta.get(i).getCord().getX();
 			int Corpo_Y = snakeCompleta.get(i).getCord().getY();
-
+	
 			if ( (head_X==Corpo_X && head_Y == Corpo_Y) )
 			{
 				hitself = true;
 				System.out.println("Bateu em si propria");
 			}
 		}
-
-		//Collisions with food
-
-		Cell food = Comida.get(0);
-
-		int food_X = food.getCord().getX();
-		int food_Y = food.getCord().getY();
-
-		if ( (head_X == food_X) && (head_Y == food_Y)) {
-			hitfood = true;
-			score += 10;
-			System.out.println("Comeu a food");
-		}
-
-
-
-	}
-
-
-	private void dealwithcollisions(){
-
+		
 		if(hitborder == true || hitself == true){
-
+			term.clearScreen();
 			System.out.println("GAME OVER");
 			System.out.println("-----x="+cursor_x+"-----");
 			System.out.println("-----y="+cursor_y+"-----");
-
+	
 			show("GAME OVER",45,15);
-
+	
 			show("Score = " + score,45,20);
-
+	
 			//Deal with Game Over and Start the Game again
 			while(true) 
 			{
@@ -338,10 +289,62 @@ public class StartGame {
 						new StartGame();
 					}
 				}
-
+	
 			}
+	
+		}
+	
+	
+	
+	}
+
+	private void actualizaSnake(){
+		int len = snakeCompleta.size();
+		Cell head = snakeCompleta.get(0);
+		int head_X = ( head.getCord().getX());
+		int head_Y = ( head.getCord().getY());
+		
+		//Collisions with food
+		Cell food = Comida.get(0);
+		int food_X = food.getCord().getX();
+		int food_Y = food.getCord().getY();
+		
+		if ( (head_X == food_X) && (head_Y == food_Y)) {
+			hitfood = true;
+			score += 10;
+			System.out.println("Comeu a food");
+		}
+
+
+		//Aumentar Snake
+		if (hitfood == true){
+
+			int x = snakeCompleta.get(len-1).getCord().getX();
+			int y = snakeCompleta.get(len-1).getCord().getY();
+
+			Cordenadas coord = new Cordenadas(x,y);
+			Cell new_tail = new Cell('0', coord);
+
+			snakeCompleta.add(new_tail);
+
+			Comida.remove(0);
+			createFood(terminalsize);
 
 		}
+
+		//remover cauda
+		snakeCompleta.remove(len-1);
+
+		int newX = cursor_x; int newY = cursor_y;
+		Cordenadas coord = new Cordenadas(newX,newY);
+		Cell new_head = new Cell('@', coord);
+
+		//Adicionar cabeça
+		snakeCompleta.add(0,new_head);
+
+		//Corrigir caracters
+		snakeCompleta.get(1).setCorpo('O');
+		snakeCompleta.get(len-1).setCorpo('Q');
 
 	}
 
