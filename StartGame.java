@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 import com.googlecode.lanterna.TerminalFacade;
 import com.googlecode.lanterna.input.Key;
@@ -17,7 +18,7 @@ public class StartGame {
 	public enum Directions{UP,DOWN,LEFT,RIGHT}
 	public Cell food;
 	
-	TerminalSize terminalsize;
+	public TerminalSize terminalsize;
 
 	public StartGame(){	
 		//Inicializar o terminal
@@ -27,9 +28,7 @@ public class StartGame {
 
 
 		terminalsize = term.getTerminalSize();
-		
-		//		int colunas = terminalsize.getColumns();
-		//		int linhas = terminalsize.getRows();
+
 
 		//Criar a Snake
 		createSnake();
@@ -59,25 +58,25 @@ public class StartGame {
 					return;
 				case ArrowLeft:
 					if (direction != Directions.RIGHT) {
-						cursor_x -= 1;
+						//cursor_x -= 1;
 						direction = Directions.LEFT;
 					}
 					break;
 				case ArrowRight:
 					if (direction != Directions.LEFT) {
-						cursor_x += 1;
+						//cursor_x += 1;
 						direction = Directions.RIGHT;
 					}
 					break;
 				case ArrowDown:
 					if (direction != Directions.UP) {
-						cursor_y += 1;
+						//cursor_y += 1;
 						direction = Directions.DOWN;
 					}
 					break;
 				case ArrowUp:
 					if (direction != Directions.DOWN) {
-						cursor_y -= 1;
+						//cursor_y -= 1;
 						direction = Directions.UP;
 					}
 					break;
@@ -86,7 +85,7 @@ public class StartGame {
 				}
 
 			}
-			if (k == null) {
+			//if (k == null) {
 				switch (direction) {
 				case LEFT:
 					cursor_x -= 1;
@@ -101,17 +100,10 @@ public class StartGame {
 					cursor_y -= 1;
 					break;
 				}
-			}
-
-			//TerminalSize terminalSize = term.getTerminalSize();
+			//}
 
 			collisons();
-
 			actualizaSnake();
-
-
-			hitfood = false;
-
 
 
 
@@ -132,8 +124,8 @@ public class StartGame {
 		int colunas = terminalSize.getColumns();
 		int linhas = terminalSize.getRows();
 
-		int foodColumns = 2 + (int)(Math.random() * ((colunas - 2) ));        	   	    	
-		int foodRows = 2 + (int)(Math.random() * ((linhas - 2) ));       	    	   
+		int foodColumns = randInt(1,colunas-2);        	   	    	
+		int foodRows = randInt(1,linhas-2);       	    	   
 		Cordenadas foodCord = new Cordenadas(foodColumns,foodRows);
 
 		Cell food = new Cell('', foodCord);
@@ -329,6 +321,7 @@ public class StartGame {
 
 			Comida.remove(0);
 			createFood(terminalsize);
+			hitfood = false;
 
 		}
 
@@ -355,4 +348,16 @@ public class StartGame {
 			term.putCharacter(str.charAt(i));
 		}
 	}
+	
+	private int randInt(int min, int max){
+		
+		Random rand = new Random();
+		
+		int randomNum = rand.nextInt((max - min ) + 1) + min;
+		
+		return randomNum;
+	}
+	
+	
+	
 }
