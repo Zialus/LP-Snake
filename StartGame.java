@@ -10,7 +10,7 @@ public class StartGame {
 	private ArrayList<Cell> snakeCompleta = new ArrayList<Cell>();
 	private ArrayList<Cell> Comida = new ArrayList<Cell>();
 
-	
+
 	private int cursor_x=10, cursor_y=10;
 	private boolean hitborder = false;
 	private boolean hitself = false;
@@ -23,10 +23,10 @@ public class StartGame {
 		term = TerminalFacade.createTerminal();
 		term.enterPrivateMode();
 		Directions direction = StartGame.Directions.RIGHT;
-		
+
 
 		TerminalSize terminalsize = term.getTerminalSize();
-		
+
 		//Criar a Snake
 		createSnake();
 		createFood(terminalsize);
@@ -92,22 +92,30 @@ public class StartGame {
 			term.clearScreen();
 			term.applySGR(Terminal.SGR.ENTER_BOLD);
 
-			actualizaSnake();
-			showSnake();
 			showBorders();
 			
+			collisons();
+			dealwithcollisions();
+
 			if(hitfood == true){
-				hitfood = false;
+				//hitfood = false;
 				Comida.remove(0);
 				createFood(terminalSize);
 			}
+			
+			actualizaSnake();
+			showSnake();
+
+			hitfood = false;
+
+
 			showFood();
 
 			term.flush();
 
 			try
 			{
-				Thread.sleep(80);
+				Thread.sleep(150);
 			}
 			catch (InterruptedException ie)
 			{
@@ -121,28 +129,28 @@ public class StartGame {
 	private void createFood(TerminalSize terminalSize){
 		int colunas = terminalSize.getColumns();
 		int linhas = terminalSize.getRows();
-		
+
 		int foodColumns = 2 + (int)(Math.random() * ((colunas - 2) ));        	   	    	
 		int foodRows = 2 + (int)(Math.random() * ((linhas - 2) ));       	    	   
 		Cordenadas foodCord = new Cordenadas(foodColumns,foodRows);
-		
+
 		Cell food = new Cell('', foodCord);
 		Comida.add(food);
-		
+
 	}
 
 	private void showFood() {
-		
+
 		Cell food = Comida.get(0);
-		
+
 		int food_X = food.getCord().getX();
 		int food_Y = food.getCord().getY();
-		
+
 		term.applyForegroundColor(Terminal.Color.YELLOW);
-		
+
 		term.moveCursor(food_X, food_Y);
 		term.putCharacter(food.getCorpo());
-		
+
 	}
 
 
@@ -219,91 +227,99 @@ public class StartGame {
 
 		int newX = cursor_x;
 		int	newY = cursor_y;
-		
-		for(int i=len-1;i>0; i--){
+
+		if (hitfood == true){
 			
+			x = snakeCompleta.get(len-1).getCord().getX();
+			y = snakeCompleta.get(len-1).getCord().getY();
+
+			Cordenadas coord = new Cordenadas(x,y);
+			Cell nova_cauda = new Cell('0', coord);
+
+			snakeCompleta.add(nova_cauda);
+
+
+		}
+
+		//
+		for(int i=len-1;i>0; i--){
 			x = snakeCompleta.get(i-1).getCord().getX();
 			y = snakeCompleta.get(i-1).getCord().getY();
 			snakeCompleta.get(i).getCord().setX(x);
 			snakeCompleta.get(i).getCord().setY(y);
-			
 		}
 
 		snakeCompleta.get(0).getCord().setX(newX);
 		snakeCompleta.get(0).getCord().setY(newY);
 
-		collisons();
 
-		dealwithcollisions();
+
 
 	}
-	
+
 	private void collisons() {
 		TerminalSize terminalSize = term.getTerminalSize();
 		int colunas = terminalSize.getColumns();
 		int linhas = terminalSize.getRows();
-	
+
 		Cell head = snakeCompleta.get(0);
 		int head_X = ( head.getCord().getX());
 		int head_Y = ( head.getCord().getY());
-	
+
 		//Collisions with borders
 		for(int i = 0; i<linhas;i++){
 			if ( (head_X==0 || head_X == colunas) && head_Y == i){
 				hitborder = true;
 			}
 		}
-	
+
 		for(int i = 0; i<colunas;i++){
 			if ( (head_Y==0 || head_Y == linhas) && head_X == i){
 				hitborder = true;
 			}
 		}
-	
+
 		//Collisions with body
 		int len = snakeCompleta.size();
-	
+
 		for(int i=1;i<len-1; i++){
 			int Corpo_X = snakeCompleta.get(i).getCord().getX();
 			int Corpo_Y = snakeCompleta.get(i).getCord().getY();
-	
+
 			if ( (head_X==Corpo_X && head_X == Corpo_Y) )
 			{
 				hitself = true;
 			}
 		}
-		
+
 		//Collisions with food
-		
+
 		Cell food = Comida.get(0);
-		
+
 		int food_X = food.getCord().getX();
 		int food_Y = food.getCord().getY();
-		
+
 		if ( (head_X == food_X) && (head_Y == food_Y)) {
 			hitfood = true;
 			System.out.println("Bateu");
 			createFood(terminalSize);
 
 		}
-		
-		
-		
+
+
+
 	}
 
 
 	private void dealwithcollisions(){
-		
-		
+
 		if(hitborder == true || hitself == true){
 
 			System.out.println("GAME OVER");
 			System.out.println("-----x="+cursor_x+"-----");
 			System.out.println("-----y="+cursor_y+"-----");
 
-
 			show("GAME OVER",45,15);
-
 
 			//Deal with Game Over and Start the Game again
 			while(true) 
@@ -323,14 +339,12 @@ public class StartGame {
 			}
 
 		}
-		
+
 	}
 
 	private void show(String str, int x, int y){
 		term.moveCursor(x, y);
-
 		int len = str.length();
-
 		for (int i = 0; i < len; i++){
 			term.putCharacter(str.charAt(i));
 		}
