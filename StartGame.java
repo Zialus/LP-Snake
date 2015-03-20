@@ -270,7 +270,9 @@ public class StartGame {
 			System.out.println("-----x="+cursor_x+"-----");
 			System.out.println("-----y="+cursor_y+"-----");
 	
-			show("GAME OVER",45,15);
+			show("GAME OVER",45,14);
+			
+			show("PRESS ESC to Exit or ENTER to start a NEW GAME",28,17);
 	
 			show("Score = " + score,45,20);
 	
