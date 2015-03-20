@@ -43,6 +43,7 @@ public class StartGame {
 			showBorders();
 			showFood();
 			showSnake();
+			term.setCursorVisible(false);
 			
 			term.flush();
 
@@ -101,15 +102,20 @@ public class StartGame {
 					break;
 				}
 			//}
-
-			collisons();
+			
 			actualizaSnake();
+			collisons();
 
 
 
 			try
 			{
-				Thread.sleep(80);
+				if (direction == Directions.RIGHT || direction == Directions.LEFT){
+					Thread.sleep(60);
+				}
+				else{
+					Thread.sleep(80);
+				}
 			}
 			catch (InterruptedException ie)
 			{
@@ -128,7 +134,7 @@ public class StartGame {
 		int foodRows = randInt(1,linhas-2);       	    	   
 		Cordenadas foodCord = new Cordenadas(foodColumns,foodRows);
 
-		Cell food = new Cell('', foodCord);
+		Cell food = new Cell('X', foodCord);
 		Comida.add(food);
 
 	}
@@ -230,14 +236,14 @@ public class StartGame {
 	
 		//Collisions with borders
 		for(int i = 0; i<linhas;i++){
-			if ( (head_X==0 || head_X == colunas) && head_Y == i){
+			if ( (head_X==0 || head_X == colunas-1) && head_Y == i){
 				hitborder = true;
 				System.out.println("Bateu numa coluna");
 			}
 		}
 	
 		for(int i = 0; i<colunas;i++){
-			if ( (head_Y==0 || head_Y == linhas) && head_X == i){
+			if ( (head_Y==0 || head_Y == linhas-1) && head_X == i){
 				hitborder = true;
 				System.out.println("Bateu numa linha");
 			}
@@ -259,6 +265,7 @@ public class StartGame {
 		
 		if(hitborder == true || hitself == true){
 			term.clearScreen();
+			showBorders();
 			System.out.println("GAME OVER");
 			System.out.println("-----x="+cursor_x+"-----");
 			System.out.println("-----y="+cursor_y+"-----");
@@ -278,6 +285,7 @@ public class StartGame {
 						System.exit(0); 
 					}	
 					if (exit.getKind() == Key.Kind.Enter) {
+						term.exitPrivateMode();
 						new StartGame();
 					}
 				}
