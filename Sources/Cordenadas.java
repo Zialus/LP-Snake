@@ -3,8 +3,6 @@ public class Cordenadas {
 	private int x;
 	private int y;
 
-	public Cordenadas(){}
-
 	public Cordenadas(int x, int y){
 		this.x = x;
 		this.y = y;

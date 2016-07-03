@@ -6,24 +6,24 @@ import com.googlecode.lanterna.input.Key;
 import com.googlecode.lanterna.terminal.Terminal;
 import com.googlecode.lanterna.terminal.TerminalSize;
 
-public class StartGame {
+public class GameInstance {
 	private Terminal term;
 	private ArrayList<Cell> snakeCompleta = new ArrayList<Cell>();
 	private ArrayList<Cell> comida = new ArrayList<Cell>();
 	private int score = 0; // Pontuação
 	private int cursor_x=10, cursor_y=10; // Posição inicial da Snake
-	private boolean hitborder = false;
-	private boolean hitself = false;
-	private boolean hitfood = false;
-	public enum Directions{UP,DOWN,LEFT,RIGHT}
-	public Cell food;
 
-	
-	public StartGame(){	
+	private boolean hasHitBorder = false;
+	private boolean hasHitItself = false;
+	private boolean hasHitFood = false;
+
+	public enum Directions{UP,DOWN,LEFT,RIGHT}
+
+	public GameInstance(){
 		//Inicializar o terminal
 		term = TerminalFacade.createTerminal();
 		term.enterPrivateMode();
-		Directions direction = StartGame.Directions.RIGHT;
+		Directions direction = GameInstance.Directions.RIGHT;
 		
 		//Criar a Snake
 		createSnake();
@@ -154,20 +154,20 @@ public class StartGame {
 		TerminalSize terminalSize = term.getTerminalSize();
 		term.applyForegroundColor(Terminal.Color.RED);
 
-		int colunas = terminalSize.getColumns();
-		int linhas = terminalSize.getRows();
+		int collums = terminalSize.getColumns();
+		int rows = terminalSize.getRows();
 
-		for(int i = 0; i<linhas;i++){
+		for(int i = 0; i<rows;i++){
 			term.moveCursor(0,i);
 			term.putCharacter('#');
-			term.moveCursor(colunas,i);
+			term.moveCursor(collums,i);
 			term.putCharacter('#');
 		}
 
-		for(int i = 0; i<colunas;i++){
+		for(int i = 0; i<collums;i++){
 			term.moveCursor(i,0);
 			term.putCharacter('#');
-			term.moveCursor(i,linhas);
+			term.moveCursor(i,rows);
 			term.putCharacter('#');
 		}
 
@@ -232,14 +232,14 @@ public class StartGame {
 		//Collisions with borders
 		for(int i = 0; i<linhas;i++){
 			if ( (head_X==0 || head_X == colunas-1) && head_Y == i){
-				hitborder = true;
+				hasHitBorder = true;
 				System.out.println("Bateu numa coluna");
 			}
 		}
 
 		for(int i = 0; i<colunas;i++){
 			if ( (head_Y==0 || head_Y == linhas-1) && head_X == i){
-				hitborder = true;
+				hasHitBorder = true;
 				System.out.println("Bateu numa linha");
 			}
 		}
@@ -253,12 +253,12 @@ public class StartGame {
 
 			if ( (head_X==Corpo_X && head_Y == Corpo_Y) )
 			{
-				hitself = true;
+				hasHitItself = true;
 				System.out.println("Bateu em si propria");
 			}
 		}
 
-		if(hitborder == true || hitself == true){
+		if(hasHitBorder == true || hasHitItself == true){
 			term.clearScreen();
 			showBorders();
 			System.out.println("GAME OVER");
@@ -283,7 +283,7 @@ public class StartGame {
 					}	
 					if (exit.getKind() == Key.Kind.Enter) {
 						term.exitPrivateMode();
-						new StartGame();
+						new GameInstance();
 					}
 				}
 
@@ -307,14 +307,14 @@ public class StartGame {
 		int food_Y = food.getCord().getY();
 
 		if ( (head_X == food_X) && (head_Y == food_Y)) {
-			hitfood = true;
+			hasHitFood = true;
 			score += 10;
 			System.out.println("Comeu a food");
 		}
 
 
 		//Aumentar Snake
-		if (hitfood == true){
+		if (hasHitFood == true){
 
 			int x = snakeCompleta.get(len-1).getCord().getX();
 			int y = snakeCompleta.get(len-1).getCord().getY();
@@ -326,7 +326,7 @@ public class StartGame {
 
 			comida.remove(0);
 			createFood();
-			hitfood = false;
+			hasHitFood = false;
 
 		}
 
@@ -357,9 +357,7 @@ public class StartGame {
 	private int randInt(int min, int max){
 		Random rand = new Random();
 
-		int randomNum = rand.nextInt((max - min ) + 1) + min;
-
-		return randomNum;
+		return rand.nextInt((max - min ) + 1) + min;
 	}
 
 }
