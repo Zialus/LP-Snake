@@ -8,8 +8,8 @@ import com.googlecode.lanterna.terminal.TerminalSize;
 
 public class GameInstance {
 	private Terminal term;
-	private ArrayList<Cell> snakeCompleta = new ArrayList<Cell>();
-	private ArrayList<Cell> comida = new ArrayList<Cell>();
+	private ArrayList<Coordinates> snakeCompleta = new ArrayList<>();
+	private ArrayList<Coordinates> comida = new ArrayList<>();
 	private int score = 0; // Pontuação
 	private int cursor_x=10, cursor_y=10; // Posição inicial da Snake
 
@@ -123,48 +123,45 @@ public class GameInstance {
 	private void createFood(){
 		TerminalSize terminalSize = term.getTerminalSize();
 
-		int colunas = terminalSize.getColumns();
-		int linhas = terminalSize.getRows();
+		int termColumns = terminalSize.getColumns();
+		int termRows = terminalSize.getRows();
 
-		int foodColumns = randInt(1,colunas-2);        	   	    	
-		int foodRows = randInt(1,linhas-2);       	    	   
-		Cordenadas foodCord = new Cordenadas(foodColumns,foodRows);
+		int foodColumns = randInt(1,termColumns-2);
+		int foodRows = randInt(1,termRows-2);
 
-		Cell food = new Cell('X', foodCord);
-		comida.add(food);
-
-	}
-
-	private void showFood() {
-
-		Cell food = comida.get(0);
-
-		int food_X = food.getCord().getX();
-		int food_Y = food.getCord().getY();
-
-		term.applyForegroundColor(Terminal.Color.YELLOW);
-
-		term.moveCursor(food_X, food_Y);
-		term.putCharacter(food.getCorpo());
+		Coordinates foodCord = new Coordinates(foodColumns,foodRows);
+		comida.add(foodCord);
 
 	}
 
+	private void createSnake(){
+		Coordinates cor1 = new Coordinates(cursor_x  , cursor_y);
+		Coordinates cor2 = new Coordinates(cursor_x -1,cursor_y);
+		Coordinates cor3 = new Coordinates(cursor_x -2,cursor_y);
+		Coordinates cor4 = new Coordinates(cursor_x -3,cursor_y);
+		Coordinates cor5 = new Coordinates(cursor_x -4,cursor_y);
+		snakeCompleta.add(cor1);
+		snakeCompleta.add(cor2);
+		snakeCompleta.add(cor3);
+		snakeCompleta.add(cor4);
+		snakeCompleta.add(cor5);
+	}
 
 	private void showBorders(){
 		TerminalSize terminalSize = term.getTerminalSize();
 		term.applyForegroundColor(Terminal.Color.RED);
 
-		int collums = terminalSize.getColumns();
+		int columns = terminalSize.getColumns();
 		int rows = terminalSize.getRows();
 
 		for(int i = 0; i<rows;i++){
 			term.moveCursor(0,i);
 			term.putCharacter('#');
-			term.moveCursor(collums,i);
+			term.moveCursor(columns,i);
 			term.putCharacter('#');
 		}
 
-		for(int i = 0; i<collums;i++){
+		for(int i = 1; i<columns-1;i++){
 			term.moveCursor(i,0);
 			term.putCharacter('#');
 			term.moveCursor(i,rows);
@@ -173,51 +170,44 @@ public class GameInstance {
 
 	}
 
-	private void showSnake(){
+	private void showFood() {
 
-		//Cabeça
-		Cell head = snakeCompleta.get(0);
-		int head_X = ( head.getCord().getX());
-		int head_Y = ( head.getCord().getY());
+		term.applyForegroundColor(Terminal.Color.YELLOW);
 
-		term.applyForegroundColor(Terminal.Color.BLUE);
-		term.moveCursor(head_X, head_Y);
-		term.putCharacter(head.getCorpo());
-
-		//Resto do corpo
-		term.applyForegroundColor(Terminal.Color.GREEN);
-		int corX, corY;
-		int len = snakeCompleta.size();
-
-		for(int i =1; i<len;i++){
-			corX = ( snakeCompleta.get(i)).getCord().getX();
-			corY = ( snakeCompleta.get(i)).getCord().getY();
-			Cell tail = snakeCompleta.get(i);
-			term.moveCursor(corX,corY);
-			term.putCharacter( tail.getCorpo() );
+		for (Coordinates food : comida) {
+			term.moveCursor(food.getX(), food.getY());
+			term.putCharacter('X');
 		}
 
 	}
 
-	private void createSnake(){
-		Cordenadas cor1 = new Cordenadas(cursor_x  , cursor_y);
-		Cordenadas cor2 = new Cordenadas(cursor_x -1,cursor_y);
-		Cordenadas cor3 = new Cordenadas(cursor_x -2,cursor_y);
-		Cordenadas cor4 = new Cordenadas(cursor_x -3,cursor_y);
-		Cordenadas cor5 = new Cordenadas(cursor_x -4,cursor_y);
 
-		Cell cel1 = new Cell('@', cor1);
-		Cell cel2 = new Cell('0', cor2);
-		Cell cel3 = new Cell('0', cor3);
-		Cell cel4 = new Cell('0', cor4);
-		Cell cel5 = new Cell('0', cor5);
+	private void showSnake(){
 
-		snakeCompleta.add(cel1);
-		snakeCompleta.add(cel2);
-		snakeCompleta.add(cel3);
-		snakeCompleta.add(cel4);
-		snakeCompleta.add(cel5);
+		// Head Stuff
+		term.applyForegroundColor(Terminal.Color.BLUE);
+
+		Coordinates head = snakeCompleta.get(0);
+		term.moveCursor(head.getX(),head.getY());
+		term.putCharacter('@');
+
+		// Body and Tail Stuff
+
+		term.applyForegroundColor(Terminal.Color.GREEN);
+		int len = snakeCompleta.size();
+
+		for(int i =1; i<len;i++){
+			Coordinates body = snakeCompleta.get(i);
+			term.moveCursor(body.getX(),body.getY());
+			term.putCharacter('O');
+		}
+
+		Coordinates tail = snakeCompleta.get(len-1);
+		term.moveCursor(tail.getX(),tail.getY());
+		term.putCharacter( 'Q' );
+
 	}
+
 
 	private void collisons() {
 
@@ -225,9 +215,9 @@ public class GameInstance {
 		int colunas = terminalSize.getColumns();
 		int linhas = terminalSize.getRows();
 
-		Cell head = snakeCompleta.get(0);
-		int head_X = ( head.getCord().getX());
-		int head_Y = ( head.getCord().getY());
+		Coordinates head = snakeCompleta.get(0);
+		int head_X = ( head.getX());
+		int head_Y = ( head.getY());
 
 		//Collisions with borders
 		for(int i = 0; i<linhas;i++){
@@ -248,8 +238,8 @@ public class GameInstance {
 		int len = snakeCompleta.size();
 
 		for(int i=1;i<len; i++){
-			int Corpo_X = snakeCompleta.get(i).getCord().getX();
-			int Corpo_Y = snakeCompleta.get(i).getCord().getY();
+			int Corpo_X = snakeCompleta.get(i).getX();
+			int Corpo_Y = snakeCompleta.get(i).getY();
 
 			if ( (head_X==Corpo_X && head_Y == Corpo_Y) )
 			{
@@ -258,7 +248,7 @@ public class GameInstance {
 			}
 		}
 
-		if(hasHitBorder == true || hasHitItself == true){
+		if(hasHitBorder || hasHitItself){
 			term.clearScreen();
 			showBorders();
 			System.out.println("GAME OVER");
@@ -297,14 +287,14 @@ public class GameInstance {
 
 	private void actualizaSnake(){
 		int len = snakeCompleta.size();
-		Cell head = snakeCompleta.get(0);
-		int head_X = ( head.getCord().getX());
-		int head_Y = ( head.getCord().getY());
+		Coordinates head = snakeCompleta.get(0);
+		int head_X = ( head.getX());
+		int head_Y = ( head.getY());
 
 		//Collisions with food
-		Cell food = comida.get(0);
-		int food_X = food.getCord().getX();
-		int food_Y = food.getCord().getY();
+		Coordinates food = comida.get(0);
+		int food_X = food.getX();
+		int food_Y = food.getY();
 
 		if ( (head_X == food_X) && (head_Y == food_Y)) {
 			hasHitFood = true;
@@ -314,15 +304,14 @@ public class GameInstance {
 
 
 		//Aumentar Snake
-		if (hasHitFood == true){
+		if (hasHitFood){
 
-			int x = snakeCompleta.get(len-1).getCord().getX();
-			int y = snakeCompleta.get(len-1).getCord().getY();
+			int x = snakeCompleta.get(len-1).getX();
+			int y = snakeCompleta.get(len-1).getY();
 
-			Cordenadas coord = new Cordenadas(x,y);
-			Cell new_tail = new Cell('0', coord);
+			Coordinates newTail = new Coordinates(x,y);
 
-			snakeCompleta.add(new_tail);
+			snakeCompleta.add(newTail);
 
 			comida.remove(0);
 			createFood();
@@ -334,15 +323,11 @@ public class GameInstance {
 		snakeCompleta.remove(len-1);
 
 		int newX = cursor_x; int newY = cursor_y;
-		Cordenadas coord = new Cordenadas(newX,newY);
-		Cell new_head = new Cell('@', coord);
+		Coordinates newHead = new Coordinates(newX,newY);
 
 		//Adicionar cabeça
-		snakeCompleta.add(0,new_head);
+		snakeCompleta.add(0,newHead);
 
-		//Corrigir caracters
-		snakeCompleta.get(1).setCorpo('O');
-		snakeCompleta.get(len-1).setCorpo('Q');
 
 	}
 
