@@ -9,11 +9,11 @@ import com.googlecode.lanterna.terminal.Terminal;
 import com.googlecode.lanterna.terminal.TerminalSize;
 
 public class GameInstance {
-	private Terminal term;
-	private ArrayList<Coordinates> snakeCompleta = new ArrayList<>();
-	private ArrayList<Coordinates> comida = new ArrayList<>();
-	private int score = 0; // Pontuação
-	private int cursor_x=10, cursor_y=10; // Posição inicial da Snake
+	private final Terminal term;
+	private final ArrayList<Coordinates> snakeBodyPositions = new ArrayList<>();
+	private final ArrayList<Coordinates> foodList = new ArrayList<>();
+	private int score = 0; // Player score
+	private int cursor_x=10, cursor_y=10; // Snake's initial position
 
 	private boolean hasHitBorder = false;
 	private boolean hasHitItself = false;
@@ -95,6 +95,8 @@ public class GameInstance {
 			case UP:
 				cursor_y -= 1;
 				break;
+			default:
+				break;
 			}
 			//}
 
@@ -132,7 +134,7 @@ public class GameInstance {
 		int foodRows = randInt(1,termRows-2);
 
 		Coordinates foodCord = new Coordinates(foodColumns,foodRows);
-		comida.add(foodCord);
+		foodList.add(foodCord);
 
 	}
 
@@ -142,11 +144,11 @@ public class GameInstance {
 		Coordinates cor3 = new Coordinates(cursor_x -2,cursor_y);
 		Coordinates cor4 = new Coordinates(cursor_x -3,cursor_y);
 		Coordinates cor5 = new Coordinates(cursor_x -4,cursor_y);
-		snakeCompleta.add(cor1);
-		snakeCompleta.add(cor2);
-		snakeCompleta.add(cor3);
-		snakeCompleta.add(cor4);
-		snakeCompleta.add(cor5);
+		snakeBodyPositions.add(cor1);
+		snakeBodyPositions.add(cor2);
+		snakeBodyPositions.add(cor3);
+		snakeBodyPositions.add(cor4);
+		snakeBodyPositions.add(cor5);
 	}
 
 	private void showBorders(){
@@ -176,7 +178,7 @@ public class GameInstance {
 
 		term.applyForegroundColor(Terminal.Color.YELLOW);
 
-		for (Coordinates food : comida) {
+		for (Coordinates food : foodList) {
 			term.moveCursor(food.getX(), food.getY());
 			term.putCharacter('X');
 		}
@@ -189,22 +191,22 @@ public class GameInstance {
 		// Head Stuff
 		term.applyForegroundColor(Terminal.Color.BLUE);
 
-		Coordinates head = snakeCompleta.get(0);
+		Coordinates head = snakeBodyPositions.get(0);
 		term.moveCursor(head.getX(),head.getY());
 		term.putCharacter('@');
 
 		// Body and Tail Stuff
 
 		term.applyForegroundColor(Terminal.Color.GREEN);
-		int len = snakeCompleta.size();
+		int len = snakeBodyPositions.size();
 
 		for(int i =1; i<len;i++){
-			Coordinates body = snakeCompleta.get(i);
-			term.moveCursor(body.getX(),body.getY());
+			Coordinates bodyPart = snakeBodyPositions.get(i);
+			term.moveCursor(bodyPart.getX(),bodyPart.getY());
 			term.putCharacter('O');
 		}
 
-		Coordinates tail = snakeCompleta.get(len-1);
+		Coordinates tail = snakeBodyPositions.get(len-1);
 		term.moveCursor(tail.getX(),tail.getY());
 		term.putCharacter( 'Q' );
 
@@ -217,7 +219,7 @@ public class GameInstance {
 		int colunas = terminalSize.getColumns();
 		int linhas = terminalSize.getRows();
 
-		Coordinates head = snakeCompleta.get(0);
+		Coordinates head = snakeBodyPositions.get(0);
 		int head_X = ( head.getX());
 		int head_Y = ( head.getY());
 
@@ -237,11 +239,11 @@ public class GameInstance {
 		}
 
 		//Collisions with body
-		int len = snakeCompleta.size();
+		int len = snakeBodyPositions.size();
 
 		for(int i=1;i<len; i++){
-			int Corpo_X = snakeCompleta.get(i).getX();
-			int Corpo_Y = snakeCompleta.get(i).getY();
+			int Corpo_X = snakeBodyPositions.get(i).getX();
+			int Corpo_Y = snakeBodyPositions.get(i).getY();
 
 			if ( (head_X==Corpo_X && head_Y == Corpo_Y) )
 			{
@@ -288,13 +290,13 @@ public class GameInstance {
 	}
 
 	private void actualizaSnake(){
-		int len = snakeCompleta.size();
-		Coordinates head = snakeCompleta.get(0);
+		int len = snakeBodyPositions.size();
+		Coordinates head = snakeBodyPositions.get(0);
 		int head_X = ( head.getX());
 		int head_Y = ( head.getY());
 
 		//Collisions with food
-		Coordinates food = comida.get(0);
+		Coordinates food = foodList.get(0);
 		int food_X = food.getX();
 		int food_Y = food.getY();
 
@@ -308,27 +310,27 @@ public class GameInstance {
 		//Aumentar Snake
 		if (hasHitFood){
 
-			int x = snakeCompleta.get(len-1).getX();
-			int y = snakeCompleta.get(len-1).getY();
+			int x = snakeBodyPositions.get(len-1).getX();
+			int y = snakeBodyPositions.get(len-1).getY();
 
 			Coordinates newTail = new Coordinates(x,y);
 
-			snakeCompleta.add(newTail);
+			snakeBodyPositions.add(newTail);
 
-			comida.remove(0);
+			foodList.remove(0);
 			createFood();
 			hasHitFood = false;
 
 		}
 
 		//remover cauda
-		snakeCompleta.remove(len-1);
+		snakeBodyPositions.remove(len-1);
 
 		int newX = cursor_x; int newY = cursor_y;
 		Coordinates newHead = new Coordinates(newX,newY);
 
 		//Adicionar cabeça
-		snakeCompleta.add(0,newHead);
+		snakeBodyPositions.add(0,newHead);
 
 
 	}
