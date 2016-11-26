@@ -1,3 +1,5 @@
+package fcup;
+
 public class Coordinates {
 
 	private int x;
