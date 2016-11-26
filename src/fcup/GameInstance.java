@@ -49,56 +49,51 @@ public class GameInstance {
 			if (k != null) {
 				System.out.println(k);
 				switch (k.getKind()) {
-				case Escape:
-					term.exitPrivateMode();
-					return;
-				case ArrowLeft:
-					if (direction != Directions.RIGHT) {
-						//cursor_x -= 1;
-						direction = Directions.LEFT;
-					}
-					break;
-				case ArrowRight:
-					if (direction != Directions.LEFT) {
-						//cursor_x += 1;
-						direction = Directions.RIGHT;
-					}
-					break;
-				case ArrowDown:
-					if (direction != Directions.UP) {
-						//cursor_y += 1;
-						direction = Directions.DOWN;
-					}
-					break;
-				case ArrowUp:
-					if (direction != Directions.DOWN) {
-						//cursor_y -= 1;
-						direction = Directions.UP;
-					}
-					break;
-				default:
-					break;
+					case Escape:
+						term.exitPrivateMode();
+						return;
+					case ArrowLeft:
+						if (direction != Directions.RIGHT) {
+							direction = Directions.LEFT;
+						}
+						break;
+					case ArrowRight:
+						if (direction != Directions.LEFT) {
+							direction = Directions.RIGHT;
+						}
+						break;
+					case ArrowDown:
+						if (direction != Directions.UP) {
+							direction = Directions.DOWN;
+						}
+						break;
+					case ArrowUp:
+						if (direction != Directions.DOWN) {
+							direction = Directions.UP;
+						}
+						break;
+					default:
+						break;
 				}
 			}
 
-			//if (k == null) {
 			switch (direction) {
-			case LEFT:
-				cursor_x -= 1;
-				break;
-			case RIGHT:
-				cursor_x += 1;
-				break;
-			case DOWN:
-				cursor_y += 1;
-				break;
-			case UP:
-				cursor_y -= 1;
-				break;
-			default:
-				break;
+				case LEFT:
+					cursor_x -= 1;
+					break;
+				case RIGHT:
+					cursor_x += 1;
+					break;
+				case DOWN:
+					cursor_y += 1;
+					break;
+				case UP:
+					cursor_y -= 1;
+					break;
+				default:
+					break;
 			}
-			//}
+
 
 			//Actualização de estado
 
