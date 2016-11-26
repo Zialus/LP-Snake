@@ -26,7 +26,7 @@ public class GameInstance {
 		term = TerminalFacade.createTerminal();
 		term.enterPrivateMode();
 		Directions direction = GameInstance.Directions.RIGHT;
-		
+
 		//Criar a Snake
 		createSnake();
 		createFood();
@@ -266,15 +266,15 @@ public class GameInstance {
 			show("Score = " + score,45,20);
 
 			//Deal with Game Over and Start the Game again
-			while(true) 
+			while(true)
 			{
 				Key exit = term.readInput();
 				if (exit != null)
 				{
-					if (exit.getKind() == Key.Kind.Escape) 
+					if (exit.getKind() == Key.Kind.Escape)
 					{
-						System.exit(0); 
-					}	
+						System.exit(0);
+					}
 					if (exit.getKind() == Key.Kind.Enter) {
 						term.exitPrivateMode();
 						new GameInstance();
