@@ -22,16 +22,17 @@ public class GameInstance {
 	public enum Directions{UP,DOWN,LEFT,RIGHT}
 
 	public GameInstance(){
-		//Inicializar o terminal
+
+		// Initialize the terminal
 		term = TerminalFacade.createTerminal();
 		term.enterPrivateMode();
 		Directions direction = GameInstance.Directions.RIGHT;
 
-		//Criar a Snake
+		// Create game objects
 		createSnake();
 		createFood();
 
-		//Dealing with input
+		// Deal with input
 		while(true){
 
 			term.clearScreen();
@@ -95,10 +96,10 @@ public class GameInstance {
 			}
 
 
-			//Actualização de estado
+			// Update game state
 
-			actualizaSnake();
-			collisons();
+			updateSnake();
+			collisions();
 
 			try
 			{
@@ -208,46 +209,46 @@ public class GameInstance {
 	}
 
 
-	private void collisons() {
+	private void collisions() {
 
 		TerminalSize terminalSize = term.getTerminalSize();
-		int colunas = terminalSize.getColumns();
-		int linhas = terminalSize.getRows();
+		int columns = terminalSize.getColumns();
+		int rows = terminalSize.getRows();
 
 		Coordinates head = snakeBodyPositions.get(0);
 		int head_X = ( head.getX());
 		int head_Y = ( head.getY());
 
-		//Collisions with borders
-		for(int i = 0; i<linhas;i++){
-			if ( (head_X==0 || head_X == colunas-1) && head_Y == i){
+		// Collisions with borders
+		for(int i = 0; i<rows;i++){
+			if ( (head_X==0 || head_X == columns-1) && head_Y == i){
 				hasHitBorder = true;
-				System.out.println("Bateu numa coluna");
+				System.out.println("Snake has hit a column");
 			}
 		}
 
-		for(int i = 0; i<colunas;i++){
-			if ( (head_Y==0 || head_Y == linhas-1) && head_X == i){
+		for(int i = 0; i<columns;i++){
+			if ( (head_Y==0 || head_Y == rows-1) && head_X == i){
 				hasHitBorder = true;
-				System.out.println("Bateu numa linha");
+				System.out.println("Snake has hit a row");
 			}
 		}
 
-		//Collisions with body
+		// Collisions with body
 		int len = snakeBodyPositions.size();
 
 		for(int i=1;i<len; i++){
-			int Corpo_X = snakeBodyPositions.get(i).getX();
-			int Corpo_Y = snakeBodyPositions.get(i).getY();
+			int body_X = snakeBodyPositions.get(i).getX();
+			int body_Y = snakeBodyPositions.get(i).getY();
 
-			if ( (head_X==Corpo_X && head_Y == Corpo_Y) )
+			if ( (head_X==body_X && head_Y == body_Y) )
 			{
 				hasHitItself = true;
-				System.out.println("Bateu em si propria");
+				System.out.println("Snake hit itself");
 			}
 		}
 
-		if(hasHitBorder || hasHitItself){
+		if( hasHitBorder || hasHitItself ) {
 			term.clearScreen();
 			showBorders();
 			System.out.println("GAME OVER");
@@ -260,7 +261,7 @@ public class GameInstance {
 
 			show("Score = " + score,45,20);
 
-			//Deal with Game Over and Start the Game again
+			//Deal with Game Over and start the game again
 			while(true)
 			{
 				Key exit = term.readInput();
@@ -280,17 +281,15 @@ public class GameInstance {
 
 		}
 
-
-
 	}
 
-	private void actualizaSnake(){
+	private void updateSnake() {
 		int len = snakeBodyPositions.size();
 		Coordinates head = snakeBodyPositions.get(0);
 		int head_X = ( head.getX());
 		int head_Y = ( head.getY());
 
-		//Collisions with food
+		// Collisions with food
 		Coordinates food = foodList.get(0);
 		int food_X = food.getX();
 		int food_Y = food.getY();
@@ -298,12 +297,11 @@ public class GameInstance {
 		if ( (head_X == food_X) && (head_Y == food_Y)) {
 			hasHitFood = true;
 			score += 10;
-			System.out.println("Comeu a food");
+			System.out.println("Food has been eaten");
 		}
 
-
-		//Aumentar Snake
-		if (hasHitFood){
+		// Increase Snake Size
+		if (hasHitFood) {
 
 			int x = snakeBodyPositions.get(len-1).getX();
 			int y = snakeBodyPositions.get(len-1).getY();
@@ -318,15 +316,14 @@ public class GameInstance {
 
 		}
 
-		//remover cauda
+		// Remove the tail
 		snakeBodyPositions.remove(len-1);
 
 		int newX = cursor_x; int newY = cursor_y;
 		Coordinates newHead = new Coordinates(newX,newY);
 
-		//Adicionar cabeça
+		// Add the head
 		snakeBodyPositions.add(0,newHead);
-
 
 	}
 
