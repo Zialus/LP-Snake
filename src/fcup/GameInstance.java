@@ -1,12 +1,16 @@
 package fcup;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
-import com.googlecode.lanterna.TerminalFacade;
-import com.googlecode.lanterna.input.Key;
+import com.googlecode.lanterna.SGR;
+import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
-import com.googlecode.lanterna.terminal.TerminalSize;
+import com.googlecode.lanterna.input.KeyStroke;
+import com.googlecode.lanterna.input.KeyType;
+import com.googlecode.lanterna.TerminalSize;
 
 public class GameInstance {
 	private final Terminal term;
@@ -21,11 +25,14 @@ public class GameInstance {
 
 	public enum Directions{UP,DOWN,LEFT,RIGHT}
 
-	public GameInstance(){
+	public GameInstance() throws IOException {
 
 		// Initialize the terminal
-		term = TerminalFacade.createTerminal();
+        DefaultTerminalFactory defaultTerminalFactory = new DefaultTerminalFactory();
+        term = defaultTerminalFactory.createTerminal();
 		term.enterPrivateMode();
+
+
 		Directions direction = GameInstance.Directions.RIGHT;
 
 		// Create game objects
@@ -36,7 +43,7 @@ public class GameInstance {
 		while(true){
 
 			term.clearScreen();
-			term.applySGR(Terminal.SGR.ENTER_BOLD);
+			term.enableSGR(SGR.BOLD);
 
 			showBorders();
 			showFood();
@@ -45,11 +52,11 @@ public class GameInstance {
 
 			term.flush();
 
-			Key k = term.readInput();
+			KeyStroke k = term.pollInput();
 
 			if (k != null) {
 				System.out.println(k);
-				switch (k.getKind()) {
+				switch (k.getKeyType()) {
 					case Escape:
 						term.exitPrivateMode();
 						return;
@@ -120,7 +127,7 @@ public class GameInstance {
 
 	}
 
-	private void createFood(){
+	private void createFood() throws IOException {
 		TerminalSize terminalSize = term.getTerminalSize();
 
 		int termColumns = terminalSize.getColumns();
@@ -147,69 +154,69 @@ public class GameInstance {
 		snakeBodyPositions.add(cor5);
 	}
 
-	private void showBorders(){
+	private void showBorders() throws IOException {
 		TerminalSize terminalSize = term.getTerminalSize();
-		term.applyForegroundColor(Terminal.Color.RED);
+		term.setForegroundColor(TextColor.ANSI.RED);
 
 		int columns = terminalSize.getColumns();
 		int rows = terminalSize.getRows();
 
 		for(int i = 0; i<rows;i++){
-			term.moveCursor(0,i);
+			term.setCursorPosition(0,i);
 			term.putCharacter('#');
-			term.moveCursor(columns,i);
+			term.setCursorPosition(columns,i);
 			term.putCharacter('#');
 		}
 
 		for(int i = 1; i<columns-1;i++){
-			term.moveCursor(i,0);
+			term.setCursorPosition(i,0);
 			term.putCharacter('#');
-			term.moveCursor(i,rows);
+			term.setCursorPosition(i,rows);
 			term.putCharacter('#');
 		}
 
 	}
 
-	private void showFood() {
+	private void showFood() throws IOException {
 
-		term.applyForegroundColor(Terminal.Color.YELLOW);
+		term.setForegroundColor(TextColor.ANSI.YELLOW);
 
 		for (Coordinates food : foodList) {
-			term.moveCursor(food.getX(), food.getY());
+			term.setCursorPosition(food.getX(), food.getY());
 			term.putCharacter('X');
 		}
 
 	}
 
 
-	private void showSnake(){
+	private void showSnake() throws IOException {
 
 		// Head Stuff
-		term.applyForegroundColor(Terminal.Color.BLUE);
+		term.setForegroundColor(TextColor.ANSI.BLUE);
 
 		Coordinates head = snakeBodyPositions.get(0);
-		term.moveCursor(head.getX(),head.getY());
+		term.setCursorPosition(head.getX(),head.getY());
 		term.putCharacter('@');
 
 		// Body and Tail Stuff
 
-		term.applyForegroundColor(Terminal.Color.GREEN);
+		term.setForegroundColor(TextColor.ANSI.GREEN);
 		int len = snakeBodyPositions.size();
 
 		for(int i =1; i<len;i++){
 			Coordinates bodyPart = snakeBodyPositions.get(i);
-			term.moveCursor(bodyPart.getX(),bodyPart.getY());
+			term.setCursorPosition(bodyPart.getX(),bodyPart.getY());
 			term.putCharacter('O');
 		}
 
 		Coordinates tail = snakeBodyPositions.get(len-1);
-		term.moveCursor(tail.getX(),tail.getY());
+		term.setCursorPosition(tail.getX(),tail.getY());
 		term.putCharacter( 'Q' );
 
 	}
 
 
-	private void collisions() {
+	private void collisions() throws IOException {
 
 		TerminalSize terminalSize = term.getTerminalSize();
 		int columns = terminalSize.getColumns();
@@ -264,14 +271,14 @@ public class GameInstance {
 			//Deal with Game Over and start the game again
 			while(true)
 			{
-				Key exit = term.readInput();
+				KeyStroke exit = term.pollInput();
 				if (exit != null)
 				{
-					if (exit.getKind() == Key.Kind.Escape)
+					if (exit.getKeyType() == KeyType.Escape)
 					{
 						System.exit(0);
 					}
-					if (exit.getKind() == Key.Kind.Enter) {
+					if (exit.getKeyType() == KeyType.Enter) {
 						term.exitPrivateMode();
 						new GameInstance();
 					}
@@ -283,7 +290,7 @@ public class GameInstance {
 
 	}
 
-	private void updateSnake() {
+	private void updateSnake() throws IOException {
 		int len = snakeBodyPositions.size();
 		Coordinates head = snakeBodyPositions.get(0);
 		int head_X = ( head.getX());
@@ -327,8 +334,8 @@ public class GameInstance {
 
 	}
 
-	private void show(String str, int x, int y){
-		term.moveCursor(x, y);
+	private void show(String str, int x, int y) throws IOException {
+		term.setCursorPosition(x, y);
 		int len = str.length();
 		for (int i = 0; i < len; i++){
 			term.putCharacter(str.charAt(i));
