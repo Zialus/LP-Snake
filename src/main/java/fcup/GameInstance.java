@@ -90,8 +90,6 @@ public class GameInstance {
                 case UP:
                     gameLogic.setCursor_y(gameLogic.getCursor_y() - 1);
                     break;
-                default:
-                    break;
             }
 
 
