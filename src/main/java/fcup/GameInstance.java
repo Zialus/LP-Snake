@@ -9,25 +9,10 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Random;
 
 public class GameInstance {
+    final GameLogic gameLogic = new GameLogic();
     private final Terminal term;
-    TerminalSize terminalSize;
-    int termColumns;
-    int termRows;
-    private final ArrayList<Coordinates> snakeBodyPositions = new ArrayList<>();
-    private final ArrayList<Coordinates> foodList = new ArrayList<>();
-    private int score = 0;
-
-    // Snake's initial position
-    private int cursor_x=10;
-    private int cursor_y=10;
-
-    private boolean hasHitBorder = false;
-    private boolean hasHitItself = false;
-    private boolean hasHitFood = false;
 
     public GameInstance() throws IOException {
 
@@ -36,15 +21,15 @@ public class GameInstance {
         term = defaultTerminalFactory.createTerminal();
         term.enterPrivateMode();
 
-        terminalSize = term.getTerminalSize();
-        termColumns = terminalSize.getColumns();
-        termRows = terminalSize.getRows();
+        gameLogic.setTerminalSize(term.getTerminalSize());
+        gameLogic.setTermColumns(gameLogic.getTerminalSize().getColumns());
+        gameLogic.setTermRows(gameLogic.getTerminalSize().getRows());
 
         Directions direction = Directions.RIGHT;
 
         // Create game objects
-        createSnake();
-        createFood();
+        gameLogic.createSnake();
+        gameLogic.createFood();
 
         // Deal with input
         while(true){
@@ -94,16 +79,16 @@ public class GameInstance {
 
             switch (direction) {
                 case LEFT:
-                    cursor_x -= 1;
+                    gameLogic.setCursor_x(gameLogic.getCursor_x() - 1);
                     break;
                 case RIGHT:
-                    cursor_x += 1;
+                    gameLogic.setCursor_x(gameLogic.getCursor_x() + 1);
                     break;
                 case DOWN:
-                    cursor_y += 1;
+                    gameLogic.setCursor_y(gameLogic.getCursor_y() + 1);
                     break;
                 case UP:
-                    cursor_y -= 1;
+                    gameLogic.setCursor_y(gameLogic.getCursor_y() - 1);
                     break;
                 default:
                     break;
@@ -112,8 +97,8 @@ public class GameInstance {
 
             // Update game state
 
-            updateSnake();
-            findCollisions();
+            gameLogic.updateSnake();
+            gameLogic.findCollisions();
             dealWithCollisions();
 
             try
@@ -135,26 +120,6 @@ public class GameInstance {
 
     }
 
-    private void createFood() {
-        int foodColumn = randInt(1,termColumns-2);
-        int foodRow = randInt(1,termRows-2);
-
-        Coordinates foodCord = new Coordinates(foodColumn,foodRow);
-        foodList.add(foodCord);
-    }
-
-    private void createSnake(){
-        Coordinates cor1 = new Coordinates(cursor_x  , cursor_y);
-        Coordinates cor2 = new Coordinates(cursor_x -1,cursor_y);
-        Coordinates cor3 = new Coordinates(cursor_x -2,cursor_y);
-        Coordinates cor4 = new Coordinates(cursor_x -3,cursor_y);
-        Coordinates cor5 = new Coordinates(cursor_x -4,cursor_y);
-        snakeBodyPositions.add(cor1);
-        snakeBodyPositions.add(cor2);
-        snakeBodyPositions.add(cor3);
-        snakeBodyPositions.add(cor4);
-        snakeBodyPositions.add(cor5);
-    }
 
     private void showBorders() throws IOException {
         TerminalSize terminalSize = term.getTerminalSize();
@@ -179,11 +144,12 @@ public class GameInstance {
 
     }
 
+
     private void showFood() throws IOException {
 
         term.setForegroundColor(TextColor.ANSI.YELLOW);
 
-        for (Coordinates food : foodList) {
+        for (Coordinates food : gameLogic.getFoodList()) {
             term.setCursorPosition(food.getX(), food.getY());
             term.putCharacter('X');
         }
@@ -196,79 +162,41 @@ public class GameInstance {
         // Head Stuff
         term.setForegroundColor(TextColor.ANSI.BLUE);
 
-        Coordinates head = snakeBodyPositions.get(0);
+        Coordinates head = gameLogic.getSnakeBodyPositions().get(0);
         term.setCursorPosition(head.getX(),head.getY());
         term.putCharacter('@');
 
         // Body and Tail Stuff
 
         term.setForegroundColor(TextColor.ANSI.GREEN);
-        int len = snakeBodyPositions.size();
+        int len = gameLogic.getSnakeBodyPositions().size();
 
         for(int i =1; i<len;i++){
-            Coordinates bodyPart = snakeBodyPositions.get(i);
+            Coordinates bodyPart = gameLogic.getSnakeBodyPositions().get(i);
             term.setCursorPosition(bodyPart.getX(),bodyPart.getY());
             term.putCharacter('O');
         }
 
-        Coordinates tail = snakeBodyPositions.get(len-1);
+        Coordinates tail = gameLogic.getSnakeBodyPositions().get(len-1);
         term.setCursorPosition(tail.getX(),tail.getY());
         term.putCharacter( 'Q' );
 
     }
 
 
-    private void findCollisions() {
-
-        Coordinates head = snakeBodyPositions.get(0);
-        int head_X = ( head.getX());
-        int head_Y = ( head.getY());
-
-        // Collisions with borders
-        for(int i = 0; i<termRows;i++){
-            if ( (head_X==0 || head_X == termColumns-1) && head_Y == i){
-                hasHitBorder = true;
-                System.out.println("Snake has hit a column");
-            }
-        }
-
-        for(int i = 0; i<termColumns;i++){
-            if ( (head_Y==0 || head_Y == termRows-1) && head_X == i){
-                hasHitBorder = true;
-                System.out.println("Snake has hit a row");
-            }
-        }
-
-        // Collisions with body
-        int len = snakeBodyPositions.size();
-
-        for(int i=1;i<len; i++){
-            int body_X = snakeBodyPositions.get(i).getX();
-            int body_Y = snakeBodyPositions.get(i).getY();
-
-            if ( (head_X==body_X && head_Y == body_Y) )
-            {
-                hasHitItself = true;
-                System.out.println("Snake hit itself");
-            }
-        }
-
-    }
-
-
     private void dealWithCollisions() throws IOException {
-        if( hasHitBorder || hasHitItself ) {
+        if(gameLogic.isHasHitBorder() || gameLogic.isHasHitItself()) {
             term.clearScreen();
             showBorders();
             System.out.println("GAME OVER");
-            System.out.println("-----x="+cursor_x+"-----");
-            System.out.println("-----y="+cursor_y+"-----");
+            System.out.println("-----x="+ gameLogic.getCursor_x() +"-----");
+            System.out.println("-----y="+ gameLogic.getCursor_y() +"-----");
 
             show("GAME OVER",45,14);
 
             show("PRESS ESC to Exit or ENTER to start a NEW GAME",28,17);
 
-            show("Score = " + score,45,20);
+            show("Score = " + gameLogic.getScore(),45,20);
 
             //Deal with Game Over and start the game again
             while(true)
@@ -291,49 +219,6 @@ public class GameInstance {
         }
     }
 
-    private void updateSnake() {
-        int len = snakeBodyPositions.size();
-        Coordinates head = snakeBodyPositions.get(0);
-        int head_X = ( head.getX());
-        int head_Y = ( head.getY());
-
-        // Collisions with food
-        Coordinates food = foodList.get(0);
-        int food_X = food.getX();
-        int food_Y = food.getY();
-
-        if ( (head_X == food_X) && (head_Y == food_Y)) {
-            hasHitFood = true;
-            score += 10;
-            System.out.println("Food has been eaten");
-        }
-
-        // Increase Snake Size
-        if (hasHitFood) {
-
-            int x = snakeBodyPositions.get(len-1).getX();
-            int y = snakeBodyPositions.get(len-1).getY();
-
-            Coordinates newTail = new Coordinates(x,y);
-
-            snakeBodyPositions.add(newTail);
-
-            foodList.remove(0);
-            createFood();
-            hasHitFood = false;
-
-        }
-
-        // Remove the tail
-        snakeBodyPositions.remove(len-1);
-
-        int newX = cursor_x; int newY = cursor_y;
-        Coordinates newHead = new Coordinates(newX,newY);
-
-        // Add the head
-        snakeBodyPositions.add(0,newHead);
-
-    }
 
     private void show(String str, int x, int y) throws IOException {
         term.setCursorPosition(x, y);
@@ -343,10 +228,5 @@ public class GameInstance {
         }
     }
 
-    private int randInt(int min, int max){
-        Random rand = new Random();
-
-        return rand.nextInt((max - min ) + 1) + min;
-    }
 
 }
