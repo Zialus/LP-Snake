@@ -32,7 +32,7 @@ public class GameInstance {
         gameLogic.createFood();
 
         // Deal with input
-        while(true){
+        while (true) {
 
             term.clearScreen();
             term.enableSGR(SGR.BOLD);
@@ -101,17 +101,13 @@ public class GameInstance {
             gameLogic.findCollisions();
             dealWithCollisions();
 
-            try
-            {
-                if (direction == Directions.RIGHT || direction == Directions.LEFT){
+            try {
+                if (direction == Directions.RIGHT || direction == Directions.LEFT) {
                     Thread.sleep(60);
-                }
-                else{
+                } else {
                     Thread.sleep(80);
                 }
-            }
-            catch (InterruptedException ie)
-            {
+            } catch (InterruptedException ie) {
                 ie.printStackTrace();
             }
 
@@ -128,17 +124,17 @@ public class GameInstance {
         int columns = terminalSize.getColumns();
         int rows = terminalSize.getRows();
 
-        for(int i = 0; i<rows;i++){
-            term.setCursorPosition(0,i);
+        for (int i = 0; i < rows; i++) {
+            term.setCursorPosition(0, i);
             term.putCharacter('#');
-            term.setCursorPosition(columns,i);
+            term.setCursorPosition(columns, i);
             term.putCharacter('#');
         }
 
-        for(int i = 1; i<columns-1;i++){
-            term.setCursorPosition(i,0);
+        for (int i = 1; i < columns - 1; i++) {
+            term.setCursorPosition(i, 0);
             term.putCharacter('#');
-            term.setCursorPosition(i,rows);
+            term.setCursorPosition(i, rows);
             term.putCharacter('#');
         }
 
@@ -163,7 +159,7 @@ public class GameInstance {
         term.setForegroundColor(TextColor.ANSI.BLUE);
 
         Coordinates head = gameLogic.getSnakeBodyPositions().get(0);
-        term.setCursorPosition(head.getX(),head.getY());
+        term.setCursorPosition(head.getX(), head.getY());
         term.putCharacter('@');
 
         // Body and Tail Stuff
@@ -171,41 +167,38 @@ public class GameInstance {
         term.setForegroundColor(TextColor.ANSI.GREEN);
         int len = gameLogic.getSnakeBodyPositions().size();
 
-        for(int i =1; i<len;i++){
+        for (int i = 1; i < len; i++) {
             Coordinates bodyPart = gameLogic.getSnakeBodyPositions().get(i);
-            term.setCursorPosition(bodyPart.getX(),bodyPart.getY());
+            term.setCursorPosition(bodyPart.getX(), bodyPart.getY());
             term.putCharacter('O');
         }
 
-        Coordinates tail = gameLogic.getSnakeBodyPositions().get(len-1);
-        term.setCursorPosition(tail.getX(),tail.getY());
-        term.putCharacter( 'Q' );
+        Coordinates tail = gameLogic.getSnakeBodyPositions().get(len - 1);
+        term.setCursorPosition(tail.getX(), tail.getY());
+        term.putCharacter('Q');
 
     }
 
 
     private void dealWithCollisions() throws IOException {
-        if(gameLogic.isHasHitBorder() || gameLogic.isHasHitItself()) {
+        if (gameLogic.isHasHitBorder() || gameLogic.isHasHitItself()) {
             term.clearScreen();
             showBorders();
             System.out.println("GAME OVER");
-            System.out.println("-----x="+ gameLogic.getCursor_x() +"-----");
-            System.out.println("-----y="+ gameLogic.getCursor_y() +"-----");
+            System.out.println("-----x=" + gameLogic.getCursor_x() + "-----");
+            System.out.println("-----y=" + gameLogic.getCursor_y() + "-----");
 
-            show("GAME OVER",45,14);
+            show("GAME OVER", 45, 14);
 
-            show("PRESS ESC to Exit or ENTER to start a NEW GAME",28,17);
+            show("PRESS ESC to Exit or ENTER to start a NEW GAME", 28, 17);
 
-            show("Score = " + gameLogic.getScore(),45,20);
+            show("Score = " + gameLogic.getScore(), 45, 20);
 
             //Deal with Game Over and start the game again
-            while(true)
-            {
+            while (true) {
                 KeyStroke exit = term.pollInput();
-                if (exit != null)
-                {
-                    if (exit.getKeyType() == KeyType.Escape)
-                    {
+                if (exit != null) {
+                    if (exit.getKeyType() == KeyType.Escape) {
                         System.exit(0);
                     }
                     if (exit.getKeyType() == KeyType.Enter) {
@@ -223,7 +216,7 @@ public class GameInstance {
     private void show(String str, int x, int y) throws IOException {
         term.setCursorPosition(x, y);
         int len = str.length();
-        for (int i = 0; i < len; i++){
+        for (int i = 0; i < len; i++) {
             term.putCharacter(str.charAt(i));
         }
     }
