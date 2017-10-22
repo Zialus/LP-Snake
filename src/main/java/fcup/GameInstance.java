@@ -14,10 +14,16 @@ import java.util.Random;
 
 public class GameInstance {
     private final Terminal term;
+    TerminalSize terminalSize;
+    int termColumns;
+    int termRows;
     private final ArrayList<Coordinates> snakeBodyPositions = new ArrayList<>();
     private final ArrayList<Coordinates> foodList = new ArrayList<>();
-    private int score = 0; // Player score
-    private int cursor_x=10, cursor_y=10; // Snake's initial position
+    private int score = 0;
+
+    // Snake's initial position
+    private int cursor_x=10;
+    private int cursor_y=10;
 
     private boolean hasHitBorder = false;
     private boolean hasHitItself = false;
@@ -30,6 +36,9 @@ public class GameInstance {
         term = defaultTerminalFactory.createTerminal();
         term.enterPrivateMode();
 
+        terminalSize = term.getTerminalSize();
+        termColumns = terminalSize.getColumns();
+        termRows = terminalSize.getRows();
 
         Directions direction = Directions.RIGHT;
 
@@ -57,7 +66,7 @@ public class GameInstance {
                 switch (k.getKeyType()) {
                     case Escape:
                         term.exitPrivateMode();
-                        return;
+                        System.exit(0);
                     case ArrowLeft:
                         if (direction != Directions.RIGHT) {
                             direction = Directions.LEFT;
@@ -104,7 +113,8 @@ public class GameInstance {
             // Update game state
 
             updateSnake();
-            collisions();
+            findCollisions();
+            dealWithCollisions();
 
             try
             {
@@ -125,18 +135,12 @@ public class GameInstance {
 
     }
 
-    private void createFood() throws IOException {
-        TerminalSize terminalSize = term.getTerminalSize();
+    private void createFood() {
+        int foodColumn = randInt(1,termColumns-2);
+        int foodRow = randInt(1,termRows-2);
 
-        int termColumns = terminalSize.getColumns();
-        int termRows = terminalSize.getRows();
-
-        int foodColumns = randInt(1,termColumns-2);
-        int foodRows = randInt(1,termRows-2);
-
-        Coordinates foodCord = new Coordinates(foodColumns,foodRows);
+        Coordinates foodCord = new Coordinates(foodColumn,foodRow);
         foodList.add(foodCord);
-
     }
 
     private void createSnake(){
@@ -214,26 +218,22 @@ public class GameInstance {
     }
 
 
-    private void collisions() throws IOException {
-
-        TerminalSize terminalSize = term.getTerminalSize();
-        int columns = terminalSize.getColumns();
-        int rows = terminalSize.getRows();
+    private void findCollisions() {
 
         Coordinates head = snakeBodyPositions.get(0);
         int head_X = ( head.getX());
         int head_Y = ( head.getY());
 
         // Collisions with borders
-        for(int i = 0; i<rows;i++){
-            if ( (head_X==0 || head_X == columns-1) && head_Y == i){
+        for(int i = 0; i<termRows;i++){
+            if ( (head_X==0 || head_X == termColumns-1) && head_Y == i){
                 hasHitBorder = true;
                 System.out.println("Snake has hit a column");
             }
         }
 
-        for(int i = 0; i<columns;i++){
-            if ( (head_Y==0 || head_Y == rows-1) && head_X == i){
+        for(int i = 0; i<termColumns;i++){
+            if ( (head_Y==0 || head_Y == termRows-1) && head_X == i){
                 hasHitBorder = true;
                 System.out.println("Snake has hit a row");
             }
@@ -253,6 +253,10 @@ public class GameInstance {
             }
         }
 
+    }
+
+
+    private void dealWithCollisions() throws IOException {
         if( hasHitBorder || hasHitItself ) {
             term.clearScreen();
             showBorders();
@@ -285,10 +289,9 @@ public class GameInstance {
             }
 
         }
-
     }
 
-    private void updateSnake() throws IOException {
+    private void updateSnake() {
         int len = snakeBodyPositions.size();
         Coordinates head = snakeBodyPositions.get(0);
         int head_X = ( head.getX());
