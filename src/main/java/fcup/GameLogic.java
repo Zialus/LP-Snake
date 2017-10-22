@@ -9,15 +9,15 @@ public class GameLogic {
     final ArrayList<Coordinates> snakeBodyPositions = new ArrayList<Coordinates>();
     final ArrayList<Coordinates> foodList = new ArrayList<Coordinates>();
     TerminalSize terminalSize;
-    int termColumns;
-    int termRows;
-    int score = 0;
+    private int termColumns;
+    private int termRows;
+    private int score = 0;
     // Snake's initial position
-    int cursor_x = 10;
-    int cursor_y = 10;
-    boolean hasHitBorder = false;
-    boolean hasHitItself = false;
-    boolean hasHitFood = false;
+    private int cursor_x = 10;
+    private int cursor_y = 10;
+    private boolean hasHitBorder = false;
+    private boolean hasHitItself = false;
+    private boolean hasHitFood = false;
 
     public GameLogic() {
     }
@@ -184,7 +184,7 @@ public class GameLogic {
 
     }
 
-    int randInt(int min, int max) {
+    private int randInt(int min, int max) {
         Random rand = new Random();
 
         return rand.nextInt((max - min) + 1) + min;
