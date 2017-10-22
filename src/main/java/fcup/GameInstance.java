@@ -23,8 +23,6 @@ public class GameInstance {
     private boolean hasHitItself = false;
     private boolean hasHitFood = false;
 
-    public enum Directions{UP,DOWN,LEFT,RIGHT}
-
     public GameInstance() throws IOException {
 
         // Initialize the terminal
@@ -33,7 +31,7 @@ public class GameInstance {
         term.enterPrivateMode();
 
 
-        Directions direction = GameInstance.Directions.RIGHT;
+        Directions direction = Directions.RIGHT;
 
         // Create game objects
         createSnake();
