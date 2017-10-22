@@ -6,7 +6,21 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class GameLogic {
+    final ArrayList<Coordinates> snakeBodyPositions = new ArrayList<Coordinates>();
+    final ArrayList<Coordinates> foodList = new ArrayList<Coordinates>();
     TerminalSize terminalSize;
+    int termColumns;
+    int termRows;
+    int score = 0;
+    // Snake's initial position
+    int cursor_x = 10;
+    int cursor_y = 10;
+    boolean hasHitBorder = false;
+    boolean hasHitItself = false;
+    boolean hasHitFood = false;
+
+    public GameLogic() {
+    }
 
     public TerminalSize getTerminalSize() {
         return terminalSize;
@@ -16,8 +30,6 @@ public class GameLogic {
         this.terminalSize = terminalSize;
     }
 
-    int termColumns;
-
     public int getTermColumns() {
         return termColumns;
     }
@@ -25,8 +37,6 @@ public class GameLogic {
     public void setTermColumns(int termColumns) {
         this.termColumns = termColumns;
     }
-
-    int termRows;
 
     public int getTermRows() {
         return termRows;
@@ -36,26 +46,17 @@ public class GameLogic {
         this.termRows = termRows;
     }
 
-    final ArrayList<Coordinates> snakeBodyPositions = new ArrayList<Coordinates>();
-
     public ArrayList<Coordinates> getSnakeBodyPositions() {
         return snakeBodyPositions;
     }
-
-    final ArrayList<Coordinates> foodList = new ArrayList<Coordinates>();
 
     public ArrayList<Coordinates> getFoodList() {
         return foodList;
     }
 
-    int score = 0;
-
     public int getScore() {
         return score;
     }
-
-    // Snake's initial position
-    int cursor_x = 10;
 
     public int getCursor_x() {
         return cursor_x;
@@ -65,8 +66,6 @@ public class GameLogic {
         this.cursor_x = cursor_x;
     }
 
-    int cursor_y = 10;
-
     public int getCursor_y() {
         return cursor_y;
     }
@@ -75,21 +74,12 @@ public class GameLogic {
         this.cursor_y = cursor_y;
     }
 
-    boolean hasHitBorder = false;
-
     public boolean isHasHitBorder() {
         return hasHitBorder;
     }
 
-    boolean hasHitItself = false;
-
     public boolean isHasHitItself() {
         return hasHitItself;
-    }
-
-    boolean hasHitFood = false;
-
-    public GameLogic() {
     }
 
     void createFood() {
