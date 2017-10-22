@@ -9,5 +9,7 @@ matrix:
       dist: trusty
       jdk: oraclejdk9
     - os: osx
-      osx_image: xcode9
-      install: brew install gradle
+      osx_image: xcode9.1
+      install:
+        - brew update
+        - brew install gradle
