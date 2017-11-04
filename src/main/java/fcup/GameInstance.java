@@ -11,7 +11,7 @@ import com.googlecode.lanterna.terminal.Terminal;
 import java.io.IOException;
 
 public class GameInstance {
-    final GameLogic gameLogic = new GameLogic();
+    private final GameLogic gameLogic = new GameLogic();
     private final Terminal term;
 
     public GameInstance() throws IOException {

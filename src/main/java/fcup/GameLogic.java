@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class GameLogic {
-    final ArrayList<Coordinates> snakeBodyPositions = new ArrayList<Coordinates>();
-    final ArrayList<Coordinates> foodList = new ArrayList<Coordinates>();
-    TerminalSize terminalSize;
+    private final ArrayList<Coordinates> snakeBodyPositions = new ArrayList<Coordinates>();
+    private final ArrayList<Coordinates> foodList = new ArrayList<Coordinates>();
+    private TerminalSize terminalSize;
     private int termColumns;
     private int termRows;
     private int score = 0;
@@ -82,7 +82,7 @@ public class GameLogic {
         return hasHitItself;
     }
 
-    void createFood() {
+    public void createFood() {
         int foodColumn = randInt(1, termColumns - 2);
         int foodRow = randInt(1, termRows - 2);
 
@@ -90,7 +90,7 @@ public class GameLogic {
         foodList.add(foodCord);
     }
 
-    void createSnake() {
+    public void createSnake() {
         Coordinates cor1 = new Coordinates(cursor_x, cursor_y);
         Coordinates cor2 = new Coordinates(cursor_x - 1, cursor_y);
         Coordinates cor3 = new Coordinates(cursor_x - 2, cursor_y);
@@ -103,7 +103,7 @@ public class GameLogic {
         snakeBodyPositions.add(cor5);
     }
 
-    void findCollisions() {
+    public void findCollisions() {
 
         Coordinates head = snakeBodyPositions.get(0);
         int head_X = (head.getX());
@@ -139,7 +139,7 @@ public class GameLogic {
 
     }
 
-    void updateSnake() {
+    public void updateSnake() {
         int len = snakeBodyPositions.size();
         Coordinates head = snakeBodyPositions.get(0);
         int head_X = (head.getX());

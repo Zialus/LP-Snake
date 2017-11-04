@@ -9,6 +9,6 @@ public class GameLogicTest {
     public void testNewSnake() {
         GameLogic game = new GameLogic();
         game.createSnake();
-        assertEquals(game.snakeBodyPositions.size(), 5);
+        assertEquals(game.getSnakeBodyPositions().size(), 5);
     }
 }
