@@ -192,19 +192,19 @@ public class GameInstance {
             show("Score = " + gameLogic.getScore(), 45, 20);
 
             //Deal with Game Over and start the game again
-            while (true) {
-                KeyStroke exit = term.pollInput();
-                if (exit != null) {
-                    if (exit.getKeyType() == KeyType.Escape) {
-                        System.exit(0);
-                    }
-                    if (exit.getKeyType() == KeyType.Enter) {
-                        term.exitPrivateMode();
-                        new GameInstance();
-                    }
-                }
+            term.flush();
 
+            KeyType exit = term.readInput().getKeyType();
+
+            if (exit == KeyType.Escape) {
+                System.exit(0);
             }
+
+            if (exit == KeyType.Enter) {
+                term.exitPrivateMode();
+                new GameInstance();
+            }
+
 
         }
     }
