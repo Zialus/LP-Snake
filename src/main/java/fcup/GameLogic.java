@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class GameLogic {
-    private final ArrayList<Coordinates> snakeBodyPositions = new ArrayList<Coordinates>();
-    private final ArrayList<Coordinates> foodList = new ArrayList<Coordinates>();
+    private final ArrayList<Coordinates> snakeBodyPositions = new ArrayList<>();
+    private final ArrayList<Coordinates> foodList = new ArrayList<>();
     private TerminalSize terminalSize;
     private int termColumns;
     private int termRows;
@@ -18,9 +18,6 @@ public class GameLogic {
     private boolean hasHitBorder = false;
     private boolean hasHitItself = false;
     private boolean hasHitFood = false;
-
-    public GameLogic() {
-    }
 
     public TerminalSize getTerminalSize() {
         return terminalSize;
@@ -184,7 +181,7 @@ public class GameLogic {
 
     }
 
-    private int randInt(int min, int max) {
+    private static int randInt(int min, int max) {
         Random rand = new Random();
 
         return rand.nextInt((max - min) + 1) + min;

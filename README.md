@@ -1,5 +1,5 @@
 # Snake
 
-## Trabalho 1 - Laboratórios de Programação (MIERSI-FCUP).
+## Assignment 1 - Laboratórios de Programação (MIERSI - FCUP).
 
-Simple Java Implementation (using Laterna API) of the classic game Snake.
+Simple Java implementation (using Lanterna API) of the classic game Snake for a college class.

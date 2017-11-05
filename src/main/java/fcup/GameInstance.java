@@ -1,7 +1,6 @@
 package fcup;
 
 import com.googlecode.lanterna.SGR;
-import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
@@ -19,6 +18,7 @@ public class GameInstance {
         // Initialize the terminal
         DefaultTerminalFactory defaultTerminalFactory = new DefaultTerminalFactory();
         term = defaultTerminalFactory.createTerminal();
+
         term.enterPrivateMode();
 
         gameLogic.setTerminalSize(term.getTerminalSize());
@@ -44,11 +44,11 @@ public class GameInstance {
 
             term.flush();
 
-            KeyStroke k = term.pollInput();
+            KeyStroke ks = term.pollInput();
 
-            if (k != null) {
-                System.out.println(k);
-                switch (k.getKeyType()) {
+            if (ks != null) {
+                System.out.println(ks);
+                switch (ks.getKeyType()) {
                     case Escape:
                         term.exitPrivateMode();
                         System.exit(0);
@@ -101,9 +101,9 @@ public class GameInstance {
 
             try {
                 if (direction == Directions.RIGHT || direction == Directions.LEFT) {
-                    Thread.sleep(60);
+                    Thread.sleep(60L);
                 } else {
-                    Thread.sleep(80);
+                    Thread.sleep(80L);
                 }
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
@@ -116,11 +116,10 @@ public class GameInstance {
 
 
     private void showBorders() throws IOException {
-        TerminalSize terminalSize = term.getTerminalSize();
-        term.setForegroundColor(TextColor.ANSI.RED);
+        int columns = gameLogic.getTerminalSize().getColumns();
+        int rows = gameLogic.getTerminalSize().getRows();
 
-        int columns = terminalSize.getColumns();
-        int rows = terminalSize.getRows();
+        term.setForegroundColor(TextColor.ANSI.RED);
 
         for (int i = 0; i < rows; i++) {
             term.setCursorPosition(0, i);
