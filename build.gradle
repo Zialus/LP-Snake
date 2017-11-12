@@ -4,18 +4,15 @@ version '1.0-SNAPSHOT'
 buildscript {
     repositories {
         mavenCentral()
-        jcenter()
     }
     dependencies {
         classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.1'
-        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'org.junit.platform.gradle.plugin'
-apply plugin: 'com.github.johnrengelman.shadow'
 
 sourceCompatibility = 1.8
 
@@ -34,8 +31,8 @@ dependencies {
 jar {
     manifest {
         attributes(
-                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
                 'Main-Class': 'fcup.Game'
         )
     }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
