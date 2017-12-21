@@ -1,18 +1,18 @@
-group 'FCUP'
-version '1.0-SNAPSHOT'
-
 buildscript {
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.1'
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.2'
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'org.junit.platform.gradle.plugin'
+
+group 'FCUP'
+version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
@@ -21,10 +21,13 @@ repositories {
 }
 
 dependencies {
-    testCompile "org.junit.jupiter:junit-jupiter-api:5.0.1"
-    testRuntime "org.junit.jupiter:junit-jupiter-engine:5.0.1"
+    testCompile 'org.junit.jupiter:junit-jupiter-api:5.0.2'
+    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.0.2'
     // To avoid compiler warnings about @API annotations in JUnit code
     testCompileOnly('org.apiguardian:apiguardian-api:1.0.0')
+    // Only needed to run tests in an (IntelliJ) IDE(A) that bundles an older version
+    testRuntime('org.junit.platform:junit-platform-launcher:1.0.2')
+
     compile 'com.googlecode.lanterna:lanterna:3.0.0'
 }
 
