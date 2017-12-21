@@ -51,7 +51,8 @@ public class GameInstance {
                 switch (ks.getKeyType()) {
                     case Escape:
                         term.exitPrivateMode();
-                        System.exit(0);
+                        Runtime.getRuntime().exit(0);
+                        break;
                     case ArrowLeft:
                         if (direction != Directions.RIGHT) {
                             direction = Directions.LEFT;
@@ -197,7 +198,7 @@ public class GameInstance {
             KeyType exit = term.readInput().getKeyType();
 
             if (exit == KeyType.Escape) {
-                System.exit(0);
+                Runtime.getRuntime().exit(0);
             }
 
             if (exit == KeyType.Enter) {
