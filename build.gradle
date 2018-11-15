@@ -1,7 +1,7 @@
 plugins {
     id "com.github.ben-manes.versions" version "0.20.0"
     id "net.ltgt.errorprone" version "0.6"
-    id "com.github.spotbugs" version "1.6.4"
+    id "com.github.spotbugs" version "1.6.5"
     id "java"
     id "idea"
 }
@@ -25,7 +25,7 @@ dependencies {
     //spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.8.0'
     //spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.3'
 
-    errorprone 'com.google.errorprone:error_prone_core:2.3.1'
+    errorprone 'com.google.errorprone:error_prone_core:2.3.2'
     errorproneJavac 'com.google.errorprone:javac:9+181-r4173-1'
 }
 
