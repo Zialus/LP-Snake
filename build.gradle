@@ -67,6 +67,17 @@ pmd {
     ignoreFailures = true
 }
 
+pitest {
+    testPlugin.set("junit5")
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
 //tasks.withType(com.github.spotbugs.SpotBugsTask) {
 //    ignoreFailures = true
 //
@@ -75,15 +86,3 @@ pmd {
 //        html.enabled = true
 //    }
 //}
-
-pitest {
-    pitestVersion = "1.4.10"
-    testPlugin = "junit5"
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled false
-        html.enabled true
-    }
-}
