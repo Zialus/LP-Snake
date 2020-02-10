@@ -11,7 +11,7 @@ plugins {
     id "se.patrikerdes.use-latest-versions" version "0.2.13"
     id "com.github.ben-manes.versions" version "0.27.0"
 //    id "net.ltgt.errorprone" version "1.1.1"
-    id "com.github.spotbugs" version "3.0.0"
+//    id "com.github.spotbugs" version "3.0.0"
     id "pmd"
 //    id 'checkstyle'
     id "java"
@@ -34,8 +34,8 @@ dependencies {
 
     implementation 'com.googlecode.lanterna:lanterna:3.1.0-alpha1'
 
-    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.10.1'
-    spotbugsPlugins 'com.mebigfatguy.sb-contrib:sb-contrib:7.4.7'
+//    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.10.1'
+//    spotbugsPlugins 'com.mebigfatguy.sb-contrib:sb-contrib:7.4.7'
 
 //    errorprone 'com.google.errorprone:error_prone_core:2.3.4'
 //    errorproneJavac 'com.google.errorprone:javac:9+181-r4173-1'
@@ -79,15 +79,15 @@ jacocoTestReport {
     }
 }
 
-spotbugs {
-    toolVersion = '4.0.0-RC1'
-}
-
-tasks.withType(com.github.spotbugs.SpotBugsTask) {
-    ignoreFailures = true
-
-    reports {
-        xml.enabled = false
-        html.enabled = true
-    }
-}
+//spotbugs {
+//    toolVersion = '4.0.0-RC1'
+//}
+//
+//tasks.withType(com.github.spotbugs.SpotBugsTask) {
+//    ignoreFailures = true
+//
+//    reports {
+//        xml.enabled = false
+//        html.enabled = true
+//    }
+//}
