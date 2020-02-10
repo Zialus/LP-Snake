@@ -17,6 +17,13 @@ plugins {
     id "java"
     id "idea"
     id 'jacoco'
+    id "org.sonarqube" version "2.8"
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "Zialus_LP-Snake"
+    }
 }
 
 group 'fcup'
