@@ -22,14 +22,7 @@ jdk:
   - openjdk9
   - openjdk8
 
-  - oraclejdk14
-  - oraclejdk13
-  - oraclejdk12
-  - oraclejdk11
-  - oraclejdk9
-
 matrix:
   allow_failures:
     - jdk: openjdk14
-    - jdk: oraclejdk14
     - jdk: openjdk8
