@@ -2,8 +2,8 @@ plugins {
     id 'info.solidsoft.pitest' version '1.4.7'
     id "se.patrikerdes.use-latest-versions" version "0.2.13"
     id "com.github.ben-manes.versions" version "0.28.0"
-    id "net.ltgt.errorprone" version "1.1.1"
-    id "com.github.spotbugs" version "4.0.1"
+//    id "net.ltgt.errorprone" version "1.1.1"
+    id "com.github.spotbugs" version "4.0.4"
     id "pmd"
 //    id 'checkstyle'
     id "java"
@@ -36,8 +36,8 @@ dependencies {
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.10.1'
     spotbugsPlugins 'com.mebigfatguy.sb-contrib:sb-contrib:7.4.7'
 
-    errorprone 'com.google.errorprone:error_prone_core:2.3.4'
-    errorproneJavac 'com.google.errorprone:javac:9+181-r4173-1'
+//    errorprone 'com.google.errorprone:error_prone_core:2.3.4'
+//    errorproneJavac 'com.google.errorprone:javac:9+181-r4173-1'
 }
 
 test {
@@ -63,11 +63,20 @@ jar {
 
 pmd {
     ignoreFailures = true
+}
 
-//    reports {
-//        xml.enabled = false
-//        html.enabled = true
-//    }
+pmdMain {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
+pmdTest {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
 }
 
 pitest {
@@ -86,9 +95,18 @@ jacocoTestReport {
 spotbugs {
     toolVersion = '4.0.1'
     ignoreFailures = true
+}
 
-//    reports {
-//        xml.enabled = false
-//        html.enabled = true
-//    }
+spotbugsMain {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
+spotbugsTest {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
 }
