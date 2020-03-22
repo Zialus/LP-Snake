@@ -16,8 +16,8 @@ install:
   - set VERSION=6.3-rc-4
   - set GRADLE_DIR=C:\gradle
   - set DOWNLOAD_URL=https://services.gradle.org/distributions/gradle-%VERSION%-bin.zip
-  - mkdir %GRADLE_DIR%
   - ps: wget $env:DOWNLOAD_URL -O gradle-bin.zip
+  - mkdir %GRADLE_DIR%
   - 7z x gradle-bin.zip -o%GRADLE_DIR%
   - set PATH=%GRADLE_DIR%\gradle-%VERSION%\bin;%PATH%
   - gradle -v
