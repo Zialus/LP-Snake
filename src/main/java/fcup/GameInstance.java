@@ -44,55 +44,9 @@ public class GameInstance {
 
             term.flush();
 
-            KeyStroke ks = term.pollInput();
+            direction = readInput(direction);
 
-            if (ks != null) {
-                System.out.println(ks);
-                switch (ks.getKeyType()) {
-                    case Escape:
-                        term.exitPrivateMode();
-                        Runtime.getRuntime().exit(0);
-                        break;
-                    case ArrowLeft:
-                        if (direction != Directions.RIGHT) {
-                            direction = Directions.LEFT;
-                        }
-                        break;
-                    case ArrowRight:
-                        if (direction != Directions.LEFT) {
-                            direction = Directions.RIGHT;
-                        }
-                        break;
-                    case ArrowDown:
-                        if (direction != Directions.UP) {
-                            direction = Directions.DOWN;
-                        }
-                        break;
-                    case ArrowUp:
-                        if (direction != Directions.DOWN) {
-                            direction = Directions.UP;
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            switch (direction) {
-                case LEFT:
-                    gameLogic.setCursor_x(gameLogic.getCursor_x() - 1);
-                    break;
-                case RIGHT:
-                    gameLogic.setCursor_x(gameLogic.getCursor_x() + 1);
-                    break;
-                case DOWN:
-                    gameLogic.setCursor_y(gameLogic.getCursor_y() + 1);
-                    break;
-                case UP:
-                    gameLogic.setCursor_y(gameLogic.getCursor_y() - 1);
-                    break;
-            }
-
+            proccessDirection(direction);
 
             // Update game state
 
@@ -113,6 +67,60 @@ public class GameInstance {
         }
         //Input has been dealt with
 
+    }
+
+    private void proccessDirection(Directions direction) {
+        switch (direction) {
+            case LEFT:
+                gameLogic.setCursor_x(gameLogic.getCursor_x() - 1);
+                break;
+            case RIGHT:
+                gameLogic.setCursor_x(gameLogic.getCursor_x() + 1);
+                break;
+            case DOWN:
+                gameLogic.setCursor_y(gameLogic.getCursor_y() + 1);
+                break;
+            case UP:
+                gameLogic.setCursor_y(gameLogic.getCursor_y() - 1);
+                break;
+        }
+    }
+
+    private Directions readInput(Directions direction) throws IOException {
+        KeyStroke ks = term.pollInput();
+
+        if (ks != null) {
+            System.out.println(ks);
+            switch (ks.getKeyType()) {
+                case Escape:
+                    term.exitPrivateMode();
+                    Runtime.getRuntime().exit(0);
+                    break;
+                case ArrowLeft:
+                    if (direction != Directions.RIGHT) {
+                        direction = Directions.LEFT;
+                    }
+                    break;
+                case ArrowRight:
+                    if (direction != Directions.LEFT) {
+                        direction = Directions.RIGHT;
+                    }
+                    break;
+                case ArrowDown:
+                    if (direction != Directions.UP) {
+                        direction = Directions.DOWN;
+                    }
+                    break;
+                case ArrowUp:
+                    if (direction != Directions.DOWN) {
+                        direction = Directions.UP;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        return direction;
     }
 
 
