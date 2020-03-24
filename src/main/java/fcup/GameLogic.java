@@ -3,7 +3,6 @@ package fcup;
 import com.googlecode.lanterna.TerminalSize;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class GameLogic {
     private final ArrayList<Coordinates> snakeBodyPositions = new ArrayList<>();
@@ -18,6 +17,9 @@ public class GameLogic {
     private boolean hasHitBorder = false;
     private boolean hasHitItself = false;
     private boolean hasHitFood = false;
+
+    private final RandGenerator randG = new RandGenerator();
+
 
     public TerminalSize getTerminalSize() {
         return terminalSize;
@@ -80,8 +82,8 @@ public class GameLogic {
     }
 
     public void createFood() {
-        int foodColumn = randInt(1, termColumns - 2);
-        int foodRow = randInt(1, termRows - 2);
+        int foodColumn = randG.randInt(1, termColumns - 2);
+        int foodRow = randG.randInt(1, termRows - 2);
 
         Coordinates foodCord = new Coordinates(foodColumn, foodRow);
         foodList.add(foodCord);
@@ -181,9 +183,4 @@ public class GameLogic {
 
     }
 
-    private static int randInt(int min, int max) {
-        Random rand = new Random();
-
-        return rand.nextInt((max - min) + 1) + min;
-    }
 }
