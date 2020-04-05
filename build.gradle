@@ -1,9 +1,9 @@
 plugins {
-    id 'info.solidsoft.pitest' version '1.4.7'
+    id 'info.solidsoft.pitest' version '1.4.8'
     id "se.patrikerdes.use-latest-versions" version "0.2.13"
     id "com.github.ben-manes.versions" version "0.28.0"
 //    id "net.ltgt.errorprone" version "1.1.1"
-//    id "com.github.spotbugs" version "4.0.4"
+//    id "com.github.spotbugs" version "4.0.5"
 //    id "pmd"
 //    id 'checkstyle'
     id "java"
@@ -82,7 +82,7 @@ jar {
 
 pitest {
     junit5PluginVersion = '0.12'
-    pitestVersion = '1.5.0'
+    pitestVersion = '1.5.1'
     mutators = ["ALL"]
 }
 
