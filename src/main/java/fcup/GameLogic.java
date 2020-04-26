@@ -1,9 +1,13 @@
 package fcup;
 
 import com.googlecode.lanterna.TerminalSize;
+import lombok.extern.java.Log;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 
+@Log
 public class GameLogic {
     private final ArrayList<Coordinates> snakeBodyPositions = new ArrayList<>();
     private final ArrayList<Coordinates> foodList = new ArrayList<>();
@@ -12,8 +16,8 @@ public class GameLogic {
     private int termRows;
     private int score = 0;
     // Snake's initial position
-    private int cursor_x = 10;
-    private int cursor_y = 10;
+    private int cursorX = 10;
+    private int cursorY = 10;
     private boolean hasHitBorder = false;
     private boolean hasHitItself = false;
     private boolean hasHitFood = false;
@@ -45,11 +49,11 @@ public class GameLogic {
         this.termRows = termRows;
     }
 
-    public ArrayList<Coordinates> getSnakeBodyPositions() {
+    public List<Coordinates> getSnakeBodyPositions() {
         return snakeBodyPositions;
     }
 
-    public ArrayList<Coordinates> getFoodList() {
+    public List<Coordinates> getFoodList() {
         return foodList;
     }
 
@@ -57,20 +61,20 @@ public class GameLogic {
         return score;
     }
 
-    public int getCursor_x() {
-        return cursor_x;
+    public int getCursorX() {
+        return cursorX;
     }
 
-    public void setCursor_x(int cursor_x) {
-        this.cursor_x = cursor_x;
+    public void setCursorX(int cursorX) {
+        this.cursorX = cursorX;
     }
 
-    public int getCursor_y() {
-        return cursor_y;
+    public int getCursorY() {
+        return cursorY;
     }
 
-    public void setCursor_y(int cursor_y) {
-        this.cursor_y = cursor_y;
+    public void setCursorY(int cursorY) {
+        this.cursorY = cursorY;
     }
 
     public boolean isHasHitBorder() {
@@ -90,11 +94,11 @@ public class GameLogic {
     }
 
     public void createSnake() {
-        Coordinates cor1 = new Coordinates(cursor_x, cursor_y);
-        Coordinates cor2 = new Coordinates(cursor_x - 1, cursor_y);
-        Coordinates cor3 = new Coordinates(cursor_x - 2, cursor_y);
-        Coordinates cor4 = new Coordinates(cursor_x - 3, cursor_y);
-        Coordinates cor5 = new Coordinates(cursor_x - 4, cursor_y);
+        Coordinates cor1 = new Coordinates(cursorX, cursorY);
+        Coordinates cor2 = new Coordinates(cursorX - 1, cursorY);
+        Coordinates cor3 = new Coordinates(cursorX - 2, cursorY);
+        Coordinates cor4 = new Coordinates(cursorX - 3, cursorY);
+        Coordinates cor5 = new Coordinates(cursorX - 4, cursorY);
         snakeBodyPositions.add(cor1);
         snakeBodyPositions.add(cor2);
         snakeBodyPositions.add(cor3);
@@ -105,21 +109,21 @@ public class GameLogic {
     public void findCollisions() {
 
         Coordinates head = snakeBodyPositions.get(0);
-        int head_X = (head.getX());
-        int head_Y = (head.getY());
+        int headX = (head.getX());
+        int headY = (head.getY());
 
         // Collisions with borders
         for (int i = 0; i < termRows; i++) {
-            if ((head_X == 0 || head_X == termColumns - 1) && head_Y == i) {
+            if ((headX == 0 || headX == termColumns - 1) && headY == i) {
                 hasHitBorder = true;
-                System.out.println("Snake has hit a column");
+                log.log(Level.INFO, "Snake has hit a column");
             }
         }
 
         for (int i = 0; i < termColumns; i++) {
-            if ((head_Y == 0 || head_Y == termRows - 1) && head_X == i) {
+            if ((headY == 0 || headY == termRows - 1) && headX == i) {
                 hasHitBorder = true;
-                System.out.println("Snake has hit a row");
+                log.log(Level.INFO, "Snake has hit a row");
             }
         }
 
@@ -127,12 +131,12 @@ public class GameLogic {
         int len = snakeBodyPositions.size();
 
         for (int i = 1; i < len; i++) {
-            int body_X = snakeBodyPositions.get(i).getX();
-            int body_Y = snakeBodyPositions.get(i).getY();
+            int bodyX = snakeBodyPositions.get(i).getX();
+            int bodyY = snakeBodyPositions.get(i).getY();
 
-            if ((head_X == body_X && head_Y == body_Y)) {
+            if ((headX == bodyX && headY == bodyY)) {
                 hasHitItself = true;
-                System.out.println("Snake hit itself");
+                log.log(Level.INFO, "Snake hit itself");
             }
         }
 
@@ -141,18 +145,18 @@ public class GameLogic {
     public void updateSnake() {
         int len = snakeBodyPositions.size();
         Coordinates head = snakeBodyPositions.get(0);
-        int head_X = (head.getX());
-        int head_Y = (head.getY());
+        int headX = (head.getX());
+        int headY = (head.getY());
 
         // Collisions with food
         Coordinates food = foodList.get(0);
-        int food_X = food.getX();
-        int food_Y = food.getY();
+        int foodX = food.getX();
+        int foodY = food.getY();
 
-        if ((head_X == food_X) && (head_Y == food_Y)) {
+        if ((headX == foodX) && (headY == foodY)) {
             hasHitFood = true;
             score += 10;
-            System.out.println("Food has been eaten");
+            log.log(Level.INFO, "Food has been eaten");
         }
 
         // Increase Snake Size
@@ -174,8 +178,8 @@ public class GameLogic {
         // Remove the tail
         snakeBodyPositions.remove(len - 1);
 
-        int newX = cursor_x;
-        int newY = cursor_y;
+        int newX = cursorX;
+        int newY = cursorY;
         Coordinates newHead = new Coordinates(newX, newY);
 
         // Add the head

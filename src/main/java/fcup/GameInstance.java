@@ -6,9 +6,12 @@ import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
+import lombok.extern.java.Log;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
+@Log
 public class GameInstance {
     private final GameLogic gameLogic = new GameLogic();
     private final Terminal term;
@@ -61,7 +64,8 @@ public class GameInstance {
                     Thread.sleep(80L);
                 }
             } catch (InterruptedException ie) {
-                ie.printStackTrace();
+                log.log(Level.SEVERE, ie.getMessage());
+                Thread.currentThread().interrupt();
             }
 
         }
@@ -72,16 +76,16 @@ public class GameInstance {
     private void proccessDirection(Directions direction) {
         switch (direction) {
             case LEFT:
-                gameLogic.setCursor_x(gameLogic.getCursor_x() - 1);
+                gameLogic.setCursorX(gameLogic.getCursorX() - 1);
                 break;
             case RIGHT:
-                gameLogic.setCursor_x(gameLogic.getCursor_x() + 1);
+                gameLogic.setCursorX(gameLogic.getCursorX() + 1);
                 break;
             case DOWN:
-                gameLogic.setCursor_y(gameLogic.getCursor_y() + 1);
+                gameLogic.setCursorY(gameLogic.getCursorY() + 1);
                 break;
             case UP:
-                gameLogic.setCursor_y(gameLogic.getCursor_y() - 1);
+                gameLogic.setCursorY(gameLogic.getCursorY() - 1);
                 break;
         }
     }
@@ -90,7 +94,7 @@ public class GameInstance {
         KeyStroke ks = term.pollInput();
 
         if (ks != null) {
-            System.out.println(ks);
+            log.log(Level.INFO, ks.toString());
             switch (ks.getKeyType()) {
                 case Escape:
                     term.exitPrivateMode();
@@ -190,9 +194,9 @@ public class GameInstance {
         if (gameLogic.isHasHitBorder() || gameLogic.isHasHitItself()) {
             term.clearScreen();
             showBorders();
-            System.out.println("GAME OVER");
-            System.out.println("-----x=" + gameLogic.getCursor_x() + "-----");
-            System.out.println("-----y=" + gameLogic.getCursor_y() + "-----");
+            log.log(Level.INFO, "GAME OVER");
+            log.log(Level.INFO, "-----x=" + gameLogic.getCursorX() + "-----");
+            log.log(Level.INFO, "-----y=" + gameLogic.getCursorY() + "-----");
 
             show("GAME OVER", 45, 14);
 
