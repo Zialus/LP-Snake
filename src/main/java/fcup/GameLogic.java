@@ -4,7 +4,6 @@ import lombok.extern.java.Log;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 @Log
 public class GameLogic {
@@ -97,14 +96,14 @@ public class GameLogic {
         for (int i = 0; i < termRows; i++) {
             if ((headX == 0 || headX == termColumns - 1) && headY == i) {
                 hasHitBorder = true;
-                log.log(Level.INFO, "Snake has hit a column");
+                log.info("Snake has hit a column");
             }
         }
 
         for (int i = 0; i < termColumns; i++) {
             if ((headY == 0 || headY == termRows - 1) && headX == i) {
                 hasHitBorder = true;
-                log.log(Level.INFO, "Snake has hit a row");
+                log.info("Snake has hit a row");
             }
         }
 
@@ -117,7 +116,7 @@ public class GameLogic {
 
             if ((headX == bodyX && headY == bodyY)) {
                 hasHitItself = true;
-                log.log(Level.INFO, "Snake hit itself");
+                log.info("Snake hit itself");
             }
         }
 
@@ -137,7 +136,7 @@ public class GameLogic {
         if ((headX == foodX) && (headY == foodY)) {
             hasHitFood = true;
             score += 10;
-            log.log(Level.INFO, "Food has been eaten");
+            log.info("Food has been eaten");
         }
 
         // Increase Snake Size

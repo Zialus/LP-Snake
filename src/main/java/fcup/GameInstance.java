@@ -62,7 +62,7 @@ public class GameInstance {
                     Thread.sleep(80L);
                 }
             } catch (InterruptedException ie) {
-                log.log(Level.SEVERE, ie.getMessage());
+                log.severe(ie.getMessage());
                 Thread.currentThread().interrupt();
             }
 
@@ -92,7 +92,7 @@ public class GameInstance {
         KeyStroke ks = term.pollInput();
 
         if (ks != null) {
-            log.log(Level.INFO, ks.toString());
+            log.info(ks.toString());
             switch (ks.getKeyType()) {
                 case Escape:
                     term.exitPrivateMode();
@@ -189,9 +189,7 @@ public class GameInstance {
         if (gameLogic.isHasHitBorder() || gameLogic.isHasHitItself()) {
             term.clearScreen();
             showBorders();
-            log.log(Level.INFO, "GAME OVER");
-            log.log(Level.INFO, "-----x=" + gameLogic.getCursorX() + "-----");
-            log.log(Level.INFO, "-----y=" + gameLogic.getCursorY() + "-----");
+            log.info("GAME OVER -- Cursor @[x=" + gameLogic.getCursorX() + "|y=" + gameLogic.getCursorY() + "]");
 
             show("GAME OVER", 45, 14);
             show("PRESS ESC to Exit or ENTER to start a NEW GAME", 28, 17);
@@ -215,14 +213,12 @@ public class GameInstance {
         }
     }
 
-
-    private void show(String str, int x, int y) throws IOException {
+    private void show(String message, int x, int y) throws IOException {
         term.setCursorPosition(x, y);
-        int len = str.length();
-        for (int i = 0; i < len; i++) {
-            term.putCharacter(str.charAt(i));
+
+        for (char c : message.toCharArray()) {
+            term.putCharacter(c);
         }
     }
-
 
 }
