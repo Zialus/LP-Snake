@@ -1,6 +1,7 @@
 package fcup;
 
 import com.googlecode.lanterna.SGR;
+import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
@@ -13,20 +14,17 @@ import java.util.logging.Level;
 
 @Log
 public class GameInstance {
-    private final GameLogic gameLogic = new GameLogic();
     private final Terminal term;
+    private final TerminalSize terminalSize = new TerminalSize(80, 40);
+    private final GameLogic gameLogic = new GameLogic(terminalSize.getColumns(), terminalSize.getRows());
 
     public GameInstance() throws IOException {
 
         // Initialize the terminal
-        DefaultTerminalFactory defaultTerminalFactory = new DefaultTerminalFactory();
-        term = defaultTerminalFactory.createTerminal();
+        term = new DefaultTerminalFactory().setInitialTerminalSize(terminalSize).createTerminal();
 
         term.enterPrivateMode();
 
-        gameLogic.setTerminalSize(term.getTerminalSize());
-        gameLogic.setTermColumns(gameLogic.getTerminalSize().getColumns());
-        gameLogic.setTermRows(gameLogic.getTerminalSize().getRows());
 
         Directions direction = Directions.RIGHT;
 
@@ -129,8 +127,8 @@ public class GameInstance {
 
 
     private void showBorders() throws IOException {
-        int columns = gameLogic.getTerminalSize().getColumns();
-        int rows = gameLogic.getTerminalSize().getRows();
+        int columns = terminalSize.getColumns();
+        int rows = terminalSize.getRows();
 
         term.setForegroundColor(TextColor.ANSI.RED);
 
@@ -150,18 +148,16 @@ public class GameInstance {
 
     }
 
-
     private void showFood() throws IOException {
 
         term.setForegroundColor(TextColor.ANSI.YELLOW);
 
-        for (Coordinates food : gameLogic.getFoodList()) {
+        for (Coordinates food : gameLogic.getFoodPositions()) {
             term.setCursorPosition(food.getX(), food.getY());
             term.putCharacter('X');
         }
 
     }
-
 
     private void showSnake() throws IOException {
 
@@ -189,7 +185,6 @@ public class GameInstance {
 
     }
 
-
     private void dealWithCollisions() throws IOException {
         if (gameLogic.isHasHitBorder() || gameLogic.isHasHitItself()) {
             term.clearScreen();
@@ -199,9 +194,7 @@ public class GameInstance {
             log.log(Level.INFO, "-----y=" + gameLogic.getCursorY() + "-----");
 
             show("GAME OVER", 45, 14);
-
             show("PRESS ESC to Exit or ENTER to start a NEW GAME", 28, 17);
-
             show("Score = " + gameLogic.getScore(), 45, 20);
 
             //Deal with Game Over and start the game again
