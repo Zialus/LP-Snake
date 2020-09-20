@@ -1,16 +1,16 @@
 plugins {
-    id 'info.solidsoft.pitest' version '1.5.1'
+    id 'info.solidsoft.pitest' version '1.5.2'
     id "se.patrikerdes.use-latest-versions" version "0.2.14"
-    id "com.github.ben-manes.versions" version "0.28.0"
+    id "com.github.ben-manes.versions" version "0.33.0"
     id "net.ltgt.errorprone" version "1.2.1"
-    id "com.github.spotbugs" version "4.3.0"
+    id "com.github.spotbugs" version "4.5.0"
 //    id "pmd"
 //    id 'checkstyle'
     id "java"
     id "idea"
     id 'jacoco'
     id "org.sonarqube" version "3.0"
-    id "io.freefair.lombok" version "5.1.0"
+    id "io.freefair.lombok" version "5.2.1"
 }
 
 sonarqube {
@@ -30,9 +30,9 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.0-M1'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.0'
 
-    implementation 'com.googlecode.lanterna:lanterna:3.1.0-beta2'
+    implementation 'com.googlecode.lanterna:lanterna:3.2.0-alpha1'
 
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.10.1'
     spotbugsPlugins 'com.mebigfatguy.sb-contrib:sb-contrib:7.4.7'
@@ -94,8 +94,10 @@ jacocoTestReport {
 }
 
 spotbugs {
-    toolVersion = '4.0.3'
+    toolVersion = '4.1.2'
     ignoreFailures = true
+    showStackTraces = false
+    showProgress = true
 }
 
 spotbugsMain {
