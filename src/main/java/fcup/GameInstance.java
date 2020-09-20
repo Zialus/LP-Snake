@@ -10,7 +10,6 @@ import com.googlecode.lanterna.terminal.Terminal;
 import lombok.extern.java.Log;
 
 import java.io.IOException;
-import java.util.logging.Level;
 
 @Log
 public class GameInstance {
