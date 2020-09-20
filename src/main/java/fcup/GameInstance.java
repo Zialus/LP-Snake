@@ -7,6 +7,11 @@ import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
+import fcup.input.DirectionInput;
+import fcup.input.Directions;
+import fcup.input.InputAction;
+import fcup.input.SystemActionInput;
+import fcup.input.SystemActions;
 import lombok.extern.java.Log;
 
 import java.io.IOException;
@@ -24,8 +29,7 @@ public class GameInstance {
 
         term.enterPrivateMode();
 
-
-        Directions direction = Directions.RIGHT;
+        Directions currentDirection = Directions.RIGHT;
 
         // Create game objects
         gameLogic.createSnake();
@@ -44,9 +48,24 @@ public class GameInstance {
 
             term.flush();
 
-            direction = readInput(direction);
+            InputAction inputAction = readInput();
 
-            proccessDirection(direction);
+            switch (inputAction.getType()) {
+                case SYSTEM_INPUT:
+                    SystemActionInput systemActionInput = (SystemActionInput) inputAction;
+                    if (systemActionInput.systemActions == SystemActions.EXIT) {
+                        term.exitPrivateMode();
+                        return;
+                    }
+                    break;
+                case DIRECTION_INPUT:
+                    currentDirection = processDirectionAction((DirectionInput) inputAction, currentDirection);
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + inputAction.getType());
+            }
+
+            proccessDirection(currentDirection);
 
             // Update game state
 
@@ -55,7 +74,7 @@ public class GameInstance {
             dealWithCollisions();
 
             try {
-                if (direction == Directions.RIGHT || direction == Directions.LEFT) {
+                if (currentDirection == Directions.RIGHT || currentDirection == Directions.LEFT) {
                     Thread.sleep(60L);
                 } else {
                     Thread.sleep(80L);
@@ -87,41 +106,54 @@ public class GameInstance {
         }
     }
 
-    private Directions readInput(Directions direction) throws IOException {
+    private InputAction readInput() throws IOException {
         KeyStroke ks = term.pollInput();
 
         if (ks != null) {
             log.info(ks.toString());
             switch (ks.getKeyType()) {
                 case Escape:
-                    term.exitPrivateMode();
-                    Runtime.getRuntime().exit(0);
-                    break;
+                    return InputAction.newSystemInput(SystemActions.EXIT);
                 case ArrowLeft:
-                    if (direction != Directions.RIGHT) {
-                        direction = Directions.LEFT;
-                    }
-                    break;
+                    return InputAction.newDirectionInput(Directions.LEFT);
                 case ArrowRight:
-                    if (direction != Directions.LEFT) {
-                        direction = Directions.RIGHT;
-                    }
-                    break;
+                    return InputAction.newDirectionInput(Directions.RIGHT);
                 case ArrowDown:
-                    if (direction != Directions.UP) {
-                        direction = Directions.DOWN;
-                    }
-                    break;
+                    return InputAction.newDirectionInput(Directions.DOWN);
                 case ArrowUp:
-                    if (direction != Directions.DOWN) {
-                        direction = Directions.UP;
-                    }
-                    break;
+                    return InputAction.newDirectionInput(Directions.UP);
                 default:
                     break;
             }
         }
-        return direction;
+
+        return InputAction.newSystemInput(SystemActions.NOOP);
+    }
+
+    private Directions processDirectionAction(DirectionInput directionInput, Directions currentDirection) {
+        switch (directionInput.direction) {
+            case LEFT:
+                if (currentDirection != Directions.RIGHT) {
+                    currentDirection = Directions.LEFT;
+                }
+                break;
+            case RIGHT:
+                if (currentDirection != Directions.LEFT) {
+                    currentDirection = Directions.RIGHT;
+                }
+                break;
+            case DOWN:
+                if (currentDirection != Directions.UP) {
+                    currentDirection = Directions.DOWN;
+                }
+                break;
+            case UP:
+                if (currentDirection != Directions.DOWN) {
+                    currentDirection = Directions.UP;
+                }
+                break;
+        }
+        return currentDirection;
     }
 
 

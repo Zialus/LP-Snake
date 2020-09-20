@@ -1,4 +1,4 @@
-package fcup;
+package fcup.input;
 
 public enum Directions {
     UP,
