@@ -3,7 +3,7 @@ plugins {
     id "se.patrikerdes.use-latest-versions" version "0.2.17"
     id "com.github.ben-manes.versions" version "0.39.0"
     id "net.ltgt.errorprone" version "2.0.2"
-    id "com.github.spotbugs" version "5.0.0-beta.1"
+    id "com.github.spotbugs" version "5.0.0-beta.3"
     id "pmd"
 //    id 'checkstyle'
     id "java"
@@ -91,7 +91,7 @@ pmdTest {
 
 pitest {
     junit5PluginVersion = '0.15'
-    pitestVersion = '1.7.0'
+    pitestVersion = '1.7.2'
     mutators = ["ALL"]
 }
 
@@ -107,7 +107,7 @@ lombok {
 }
 
 spotbugs {
-    toolVersion = '4.4.1'
+    toolVersion = '4.4.2'
     ignoreFailures = true
     showStackTraces = false
     showProgress = true
