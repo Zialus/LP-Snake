@@ -247,8 +247,8 @@ public class GameInstance {
     private void show(String message, int x, int y) throws IOException {
         term.setCursorPosition(x, y);
 
-        for (char c : message.toCharArray()) {
-            term.putCharacter(c);
+        for (int i = 0; i < message.length(); i++) {
+            term.putCharacter(message.charAt(i));
         }
     }
 
