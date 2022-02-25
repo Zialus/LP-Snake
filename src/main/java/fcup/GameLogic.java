@@ -89,8 +89,8 @@ public class GameLogic {
     public void findCollisions() {
 
         Coordinates head = snakeBodyPositions.get(0);
-        int headX = (head.getX());
-        int headY = (head.getY());
+        int headX = head.getX();
+        int headY = head.getY();
 
         // Collisions with borders
         for (int i = 0; i < termRows; i++) {
@@ -114,7 +114,7 @@ public class GameLogic {
             int bodyX = snakeBodyPositions.get(i).getX();
             int bodyY = snakeBodyPositions.get(i).getY();
 
-            if ((headX == bodyX && headY == bodyY)) {
+            if (headX == bodyX && headY == bodyY) {
                 hasHitItself = true;
                 log.info("Snake hit itself");
             }
@@ -125,15 +125,15 @@ public class GameLogic {
     public void updateSnake() {
         int len = snakeBodyPositions.size();
         Coordinates head = snakeBodyPositions.get(0);
-        int headX = (head.getX());
-        int headY = (head.getY());
+        int headX = head.getX();
+        int headY = head.getY();
 
         // Collisions with food
         Coordinates food = foodPositions.get(0);
         int foodX = food.getX();
         int foodY = food.getY();
 
-        if ((headX == foodX) && (headY == foodY)) {
+        if (headX == foodX && headY == foodY) {
             hasHitFood = true;
             score += 10;
             log.info("Food has been eaten");
