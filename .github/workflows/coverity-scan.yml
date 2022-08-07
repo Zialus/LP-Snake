@@ -6,7 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  latest:
+  daily_scan:
+    name: Daily Scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -24,6 +25,7 @@ jobs:
         run: |
           export PATH=`pwd`/cov-analysis-linux64/bin:$PATH
           cov-build --dir cov-int gradle build --no-daemon
+
       - name: Submit the result to Coverity Scan
         run: |
           tar czvf snake.tgz cov-int
