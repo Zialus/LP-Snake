@@ -1,16 +1,16 @@
 plugins {
     id 'info.solidsoft.pitest' version '1.9.0'
     id "se.patrikerdes.use-latest-versions" version "0.2.18"
-    id "com.github.ben-manes.versions" version "0.42.0"
-    id "net.ltgt.errorprone" version "2.0.2"
-    id "com.github.spotbugs" version "5.0.10"
+    id "com.github.ben-manes.versions" version "0.44.0"
+    id "net.ltgt.errorprone" version "3.0.1"
+    id "com.github.spotbugs" version "5.0.13"
     id "pmd"
-//    id 'checkstyle'
+    id 'checkstyle'
     id "java"
     id "idea"
     id 'jacoco'
-    id "org.sonarqube" version "3.4.0.2513"
-    id "io.freefair.lombok" version "6.5.0.3"
+    id "org.sonarqube" version "3.5.0.2730"
+    id "io.freefair.lombok" version "6.5.1"
 }
 
 sonarqube {
@@ -24,27 +24,30 @@ sonarqube {
 group 'fcup'
 version '1.0-SNAPSHOT'
 
+Boolean enableErrorProne = System.properties['enableErrorProne']
+println "[IMPORTANT INFORMATION] ErrorProne is ${enableErrorProne ? 'enabled' : 'disabled'}"
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
 
     implementation 'com.googlecode.lanterna:lanterna:3.2.0-alpha1'
 
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.12.0'
     spotbugsPlugins 'com.mebigfatguy.sb-contrib:sb-contrib:7.4.7'
 
-    annotationProcessor "com.uber.nullaway:nullaway:0.9.9"
-    errorprone 'com.google.errorprone:error_prone_core:2.15.0'
+    annotationProcessor "com.uber.nullaway:nullaway:0.10.4"
+    errorprone 'com.google.errorprone:error_prone_core:2.16'
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
+    options.errorprone.enabled = enableErrorProne ?: false
     options.errorprone {
         option("NullAway:AnnotatedPackages", "fcup")
     }
-
     options.compilerArgs += ['-Xlint:all']
 }
 
@@ -89,8 +92,8 @@ pmdTest {
 }
 
 pitest {
-    junit5PluginVersion = '1.0.0'
-    pitestVersion = '1.9.5'
+    junit5PluginVersion = '1.1.0'
+    pitestVersion = '1.9.10'
     mutators = ["ALL"]
 }
 
@@ -110,7 +113,7 @@ lombok {
 }
 
 spotbugs {
-    toolVersion = '4.7.1'
+    toolVersion = '4.7.3'
     ignoreFailures = true
     showStackTraces = false
     showProgress = true
@@ -118,12 +121,32 @@ spotbugs {
 
 spotbugsMain {
     reports {
+        xml { required = false }
+        html { required = true }
+    }
+}
+
+spotbugsTest {
+    reports {
+        xml { required = false }
+        html { required = true }
+    }
+}
+
+checkstyle {
+    toolVersion = '10.4'
+    showViolations = false
+    ignoreFailures = true
+}
+
+checkstyleMain {
+    reports {
         xml.required = false
         html.required = true
     }
 }
 
-spotbugsTest {
+checkstyleTest {
     reports {
         xml.required = false
         html.required = true
