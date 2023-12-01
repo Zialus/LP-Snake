@@ -38,7 +38,7 @@ dependencies {
     implementation 'com.googlecode.lanterna:lanterna:3.2.0-alpha1'
 
     spotbugsPlugins('com.h3xstream.findsecbugs:findsecbugs-plugin:1.12.0') { transitive = false }
-    spotbugsPlugins('com.mebigfatguy.sb-contrib:sb-contrib:7.6.1') { transitive = false }
+    spotbugsPlugins('com.mebigfatguy.sb-contrib:sb-contrib:7.6.2') { transitive = false }
 
     annotationProcessor "com.uber.nullaway:nullaway:0.10.17"
     errorprone 'com.google.errorprone:error_prone_core:2.23.0'
