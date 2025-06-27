@@ -11,6 +11,7 @@ plugins {
     id 'jacoco'
     id "org.sonarqube" version "6.2.0.5505"
     id "io.freefair.lombok" version "8.14"
+    id "nebula.lint" version "20.6.2"
 }
 
 sonarqube {
@@ -33,7 +34,7 @@ repositories {
 
 dependencies {
     testImplementation('org.junit.jupiter:junit-jupiter:5.13.2')
-    testImplementation('org.junit.platform:junit-platform-launcher:1.13.2')
+    testRuntimeOnly('org.junit.platform:junit-platform-launcher:1.13.2')
 
     implementation('com.googlecode.lanterna:lanterna:3.2.0-alpha1')
 
