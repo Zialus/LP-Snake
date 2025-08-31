@@ -48,7 +48,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        java: [17, 21]
+        java: [21]
 
     runs-on: ${{ matrix.os }}
 
@@ -69,7 +69,14 @@ jobs:
         run: gradle -v
         
       - name: Gradle Build
-        run: gradle build -D enableErrorProne=true
+        run: gradle build -D enableErrorProne=true --scan
+
+      - name: Upload gradle build scan reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: build-reports
+          path: '**/build/reports/'
 
   sonar:
     name: Sonarcloud
