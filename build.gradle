@@ -12,6 +12,7 @@ plugins {
     id "org.sonarqube" version "7.5.0.8588"
     id "io.freefair.lombok" version "9.8.2"
     id "nebula.lint" version "21.3.0"
+    id "me.champeau.jmh" version "0.7.3"
 }
 
 sonarqube {
@@ -111,6 +112,20 @@ jacocoTestReport {
         xml.required = true
         html.required = true
     }
+}
+
+// The CodSpeed JMH fork is used when the third-party/codspeed-jvm submodule is checked out,
+// otherwise fall back to upstream JMH so that builds without submodules keep working.
+def codspeedJmhFork = file('third-party/codspeed-jvm/jmh-fork/settings.gradle.kts').exists()
+
+jmh {
+    jmhVersion = codspeedJmhFork ? '0.2.1' : '1.37'
+    warmupIterations = 2
+    warmup = '1s'
+    iterations = 3
+    timeOnIteration = '1s'
+    fork = 1
+    forceGC = true
 }
 
 lombok {
