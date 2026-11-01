@@ -1,4 +1,4 @@
-name: GHAS Analysis with zizmor 🌈
+name: 🔍 GHA Linter
 
 on:
   push:
@@ -7,21 +7,49 @@ on:
     branches: ["master"]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions: {}
 
 jobs:
-  zizmor:
-    name: Run zizmor 🌈
+  lint:
+    name: Validate GitHub Actions and YAML
     runs-on: ubuntu-latest
     permissions:
-      security-events: write # Required for upload-sarif (used by zizmor-action) to upload SARIF files.
-      contents: read         # Only needed for private repos. Needed to clone the repo.
-      actions: read          # Only needed for private repos. Needed for upload-sarif to read workflow run info.
+      contents: read  # Required to read repository contents.
+      checks: write  # Required to publish check annotations from the lint tools.
+      pull-requests: write  # Required to leave review comments on pull requests.
+      actions: read  # Required to inspect workflow and action metadata.
+      security-events: write  # Required to upload the Zizmor SARIF report.
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: 📥 Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
         with:
           persist-credentials: false
 
-      - name: Run zizmor 🌈
-        uses: zizmorcore/zizmor-action@53290badfa369cb0bf7ad16342cb62c2fa47ac7b # v0.8.0
+      - name: 🔎 Run actionlint
+        uses: reviewdog/action-actionlint@619a81ec64ff8c0211cd6146eb2b21e8f1d7f440  # v1.81.1
+        with:
+          reporter: github-pr-review
+
+      - name: 🧪 Run yamllint
+        uses: reviewdog/action-yamllint@072d1a6ca6f5a03de10f492f6119fcbc8d47302b  # v1.25.4
+        with:
+          reporter: github-pr-review
+          yamllint_flags: .github
+
+      - name: 📝 Run markdownlint
+        uses: reviewdog/action-markdownlint@f8e8c509d6e706db79bb39c1c506c968f1a66b82  # v0.32.0
+        with:
+          reporter: github-pr-review
+          markdownlint_flags: "**/*.md"
+
+      - name: 🛡️ Run zizmor
+        uses: zizmorcore/zizmor-action@53290badfa369cb0bf7ad16342cb62c2fa47ac7b  # v0.8.0
+        with:
+          inputs: .github
+          persona: pedantic
+          advanced-security: false
+          annotations: true
