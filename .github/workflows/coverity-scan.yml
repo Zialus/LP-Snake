@@ -7,7 +7,7 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
 
 permissions: {}
 
@@ -53,10 +53,10 @@ jobs:
           tar czvf snake.tgz cov-int
           curl \
           --form "token=$TOKEN" \
-          --form "email=raulmendesferreira@gmail.com" \
-          --form "file=@snake.tgz" \
-          --form "version=trunk" \
-          --form "description=LP-Snake" \
+          --form email=raulmendesferreira@gmail.com \
+          --form file=@snake.tgz \
+          --form version="trunk" \
+          --form description="LP-Snake" \
           https://scan.coverity.com/builds?project=Zialus%2FLP-Snake
         env:
           TOKEN: ${{ secrets.COVERITY_TOKEN }}
