@@ -44,18 +44,19 @@ jobs:
 
       - name: Build with cov-build
         run: |
-          export PATH=`pwd`/cov-analysis-linux64/bin:$PATH
+          WORKSPACE="$(pwd)"
+          export PATH="$WORKSPACE/cov-analysis-linux64/bin:$PATH"
           cov-build --dir cov-int gradle build --no-daemon
 
       - name: Submit the result to Coverity Scan
         run: |
           tar czvf snake.tgz cov-int
           curl \
-          --form token=$TOKEN \
-          --form email=raulmendesferreira@gmail.com \
-          --form file=@snake.tgz \
-          --form version="trunk" \
-          --form description="LP-Snake" \
+          --form "token=$TOKEN" \
+          --form "email=raulmendesferreira@gmail.com" \
+          --form "file=@snake.tgz" \
+          --form "version=trunk" \
+          --form "description=LP-Snake" \
           https://scan.coverity.com/builds?project=Zialus%2FLP-Snake
         env:
           TOKEN: ${{ secrets.COVERITY_TOKEN }}
