@@ -35,12 +35,12 @@ jobs:
     # Consider using larger runners or machines with greater resources for possible analysis time improvements.
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
     permissions:
-      security-events: write # Required to upload CodeQL analysis results.
+      security-events: write  # Upload CodeQL results.
 
-      packages: read # Required to fetch internal or private CodeQL packs.
+      packages: read  # Fetch private CodeQL packs.
 
-      actions: read # Required to access private repository actions.
-      contents: read # Required to check out the repository.
+      actions: read  # Read private action metadata.
+      contents: read  # Check out source.
 
     strategy:
       fail-fast: false
