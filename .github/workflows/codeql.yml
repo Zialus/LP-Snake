@@ -19,6 +19,8 @@ on:
   schedule:
     - cron: '34 14 * * 3'
 
+permissions: {}
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
