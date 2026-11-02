@@ -44,8 +44,8 @@ jobs:
 
       - name: Build with cov-build
         run: |
-          WORKSPACE="$(pwd)"
-          export PATH="$WORKSPACE/cov-analysis-linux64/bin:$PATH"
+          PATH="$GITHUB_WORKSPACE/cov-analysis-linux64/bin:$PATH"
+          export PATH
           cov-build --dir cov-int gradle build --no-daemon
 
       - name: Submit the result to Coverity Scan
