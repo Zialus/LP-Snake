@@ -19,6 +19,12 @@ on:
   schedule:
     - cron: '34 14 * * 3'
 
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
+
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
@@ -29,15 +35,12 @@ jobs:
     # Consider using larger runners or machines with greater resources for possible analysis time improvements.
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
     permissions:
-      # required for all workflows
-      security-events: write
+      security-events: write  # Upload CodeQL results.
 
-      # required to fetch internal or private CodeQL packs
-      packages: read
+      packages: read  # Fetch private CodeQL packs.
 
-      # only required for workflows in private repositories
-      actions: read
-      contents: read
+      actions: read  # Read private action metadata.
+      contents: read  # Check out source.
 
     strategy:
       fail-fast: false
@@ -58,6 +61,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        persist-credentials: false
 
     # Add any setup steps before running the `github/codeql-action/init` action.
     # This includes steps like installing compilers or runtimes (`actions/setup-node`
