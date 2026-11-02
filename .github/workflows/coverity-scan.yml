@@ -51,7 +51,7 @@ jobs:
       - name: Submit the result to Coverity Scan
         run: |
           tar czvf snake.tgz cov-int
-          curl \
+          curl --fail-with-body \
           --form "token=$TOKEN" \
           --form email=raulmendesferreira@gmail.com \
           --form file=@snake.tgz \
