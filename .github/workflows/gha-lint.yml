@@ -41,7 +41,7 @@ jobs:
           yamllint_flags: .github
 
       - name: 📝 Run markdownlint
-        uses: reviewdog/action-markdownlint@55f2ecf4c813c1cfac36953c1c40a46ec5c28f70  # v0.33.0
+        uses: reviewdog/action-markdownlint@16a84e29a125f2c98b1ce4bd8436ff8ffdd9da1c  # v0.34.1
         with:
           reporter: github-pr-review
           markdownlint_flags: "**/*.md"
